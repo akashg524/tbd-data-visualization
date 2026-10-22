@@ -61,4 +61,5 @@ ehthumbs.db
 # ==========================
 # Planning / GSD
 # ==========================
-.planning/
+# .planning is tracked in git for project memory
+

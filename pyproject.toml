@@ -15,17 +15,22 @@ dependencies = [
     "duckdb>=1.2,<2",
     "pyarrow>=18,<20",
 
-    # --- Database Connectors ---
+    # --- Cloud Storage & Lakehouse ---
+    "boto3>=1.35,<2",            # AWS S3
+    "azure-storage-blob>=12.23,<13",  # Azure Blob / ADLS Gen2
+    "azure-keyvault-secrets>=4.11,<5", # Azure Key Vault
+    "azure-identity>=1.26,<2",         # Azure Entra ID / Managed Identity
+    "pyiceberg>=0.12,<1",        # Apache Iceberg table format & catalog
+    "google-cloud-storage>=2.18,<3",  # GCS
+
+    # --- Database Connectors (Read-Only) ---
     "sqlalchemy>=2.0,<3",
     "asyncpg>=0.30,<1",          # PostgreSQL async
     "aiomysql>=0.2,<1",          # MySQL async
     "pymssql>=2.3,<3",           # SQL Server
     "psycopg[binary]>=3.2,<4",   # PostgreSQL (sync/async)
-
-    # --- Cloud Storage ---
-    "boto3>=1.35,<2",            # AWS S3
-    "azure-storage-blob>=12.23,<13",  # Azure Blob
-    "google-cloud-storage>=2.18,<3",  # GCS
+    "oracledb>=26.0,<27",        # Oracle (pure thin mode)
+    "azure-cosmos>=4.17,<5",     # Azure Cosmos DB
 
     # --- File Formats ---
     "openpyxl>=3.1,<4",          # Excel (.xlsx)
