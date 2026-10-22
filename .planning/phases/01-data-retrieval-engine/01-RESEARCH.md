@@ -131,3 +131,23 @@ class CredentialVault:
         # Local development / CI fallback
         return os.environ.get(secret_name.upper().replace("-", "_"), "")
 ```
+
+---
+
+## Validation Architecture
+
+### Test Infrastructure
+- **Framework**: `pytest` 8.4+ with `pytest-asyncio`
+- **Configuration**: `pyproject.toml` (`[tool.pytest.ini_options]`)
+- **Quick Run Command**: `.\.venv\Scripts\pytest.exe tests/ -q`
+- **Full Suite Command**: `.\.venv\Scripts\pytest.exe tests/ -v --cov=backend/app`
+- **Estimated Runtime**: ~5 seconds
+
+### Automated Verification Targets
+1. `tests/test_vault.py`: Secret resolution, cache hits, local env fallback.
+2. `tests/test_base_connector.py`: Abstract interface compliance and model serialization.
+3. `tests/test_iceberg_adls.py`: Iceberg manifest inspection, schema discovery, and DuckDB `iceberg_scan()`.
+4. `tests/test_cosmos.py`: Cosmos DB container discovery, partition key mapping, and schema sampling.
+5. `tests/test_relational_connectors.py`: Oracle thin-mode read-only enforcement, SQL Server `ApplicationIntent=ReadOnly`, and Arrow table conversions.
+6. `tests/test_catalog.py`: Unified namespace (`catalog.schema.table`) registration and path resolution.
+
