@@ -6,7 +6,7 @@ A phased journey from foundational read-only connectors and Apache Iceberg catal
 
 ## Phases
 
-- [ ] **Phase 1: High-Performance Read-Only Connectors & Iceberg Catalog** - Connect ADLS Gen2 Iceberg, Oracle, SQL Server, Azure SQL, and Cosmos DB with unified metadata introspection.
+- [x] **Phase 1: High-Performance Read-Only Connectors & Iceberg Catalog** - Connect ADLS Gen2 Iceberg, Oracle, SQL Server, Azure SQL, and Cosmos DB with unified metadata introspection.
 - [ ] **Phase 2: Hybrid Federated Query Planner & In-Memory Join Engine** - Build predicate pushdown query compiler and vectorized DuckDB hash joiner with Arrow streaming.
 - [ ] **Phase 3: Speed Layer & Semantic Power BI Serving** - Implement two-tier result/dimension caching and PostgreSQL wire protocol / Arrow Flight gateway for Power BI DirectQuery.
 - [ ] **Phase 4: Web SQL Studio, Enterprise Security & AKS Production Deployment** - Monaco SQL Studio, Entra ID SSO, Key Vault, and Helm/Kubernetes deployment manifests.
@@ -28,9 +28,9 @@ A phased journey from foundational read-only connectors and Apache Iceberg catal
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Credential Vault & Pluggable Base Connector Architecture
-- [ ] 01-02: Apache Iceberg ADLS Gen2 & Cosmos DB Connectors
-- [ ] 01-03: Relational Read-Only Connectors (Oracle, MSSQL, Azure SQL) & Unified Catalog Registry
+- [x] 01-01: Credential Vault & Pluggable Base Connector Architecture
+- [x] 01-02: Apache Iceberg ADLS Gen2 & Cosmos DB Connectors
+- [x] 01-03: Relational Read-Only Connectors (Oracle, MSSQL, Azure SQL) & Unified Catalog Registry
 
 ### Phase 2: Hybrid Federated Query Planner & In-Memory Join Engine
 **Goal**: Compile federated SQL across multiple stores, push down predicates to source engines, and execute vectorized cross-source hash joins in DuckDB/PyArrow.
