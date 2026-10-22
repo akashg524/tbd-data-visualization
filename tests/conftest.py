@@ -3,8 +3,8 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from app.main import create_app
 from app.engine import analytics_engine
+from app.main import create_app
 
 
 @pytest.fixture(scope="session", autouse=True)

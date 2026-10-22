@@ -31,7 +31,9 @@ def test_engine_parquet_read(tmp_path):
     engine = AnalyticsEngine()
     engine.initialize()
 
-    result = engine.execute_query(f"SELECT * FROM read_parquet('{str(path).replace(chr(92), '/')}')")
+    result = engine.execute_query(
+        f"SELECT * FROM read_parquet('{str(path).replace(chr(92), '/')}')"  # noqa: S608
+    )
     rows = result.fetchall()
     assert len(rows) == 3
     assert rows[0][0] == "AAPL"
