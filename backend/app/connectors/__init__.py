@@ -11,6 +11,8 @@ from app.connectors.models import (
     TableMetadata,
     TableSchema,
 )
+from app.connectors.oracle import OracleConnector
+from app.connectors.sqlserver import SQLServerConnector
 
 __all__ = [
     "BaseConnector",
@@ -20,6 +22,8 @@ __all__ = [
     "CosmosDBConnector",
     "DataType",
     "IcebergADLSConnector",
+    "OracleConnector",
+    "SQLServerConnector",
     "TableMetadata",
     "TableSchema",
 ]
