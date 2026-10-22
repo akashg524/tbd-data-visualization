@@ -1,6 +1,8 @@
-"""Connector package exposing models and base contracts."""
+"""Connector package exposing models, base contracts, and implementations."""
 
 from app.connectors.base import BaseConnector
+from app.connectors.cosmos import CosmosDBConnector
+from app.connectors.iceberg_adls import IcebergADLSConnector
 from app.connectors.models import (
     ColumnMetadata,
     ConnectionConfig,
@@ -15,7 +17,9 @@ __all__ = [
     "ColumnMetadata",
     "ConnectionConfig",
     "ConnectionStatus",
+    "CosmosDBConnector",
     "DataType",
+    "IcebergADLSConnector",
     "TableMetadata",
     "TableSchema",
 ]
