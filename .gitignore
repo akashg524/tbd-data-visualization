@@ -1,0 +1,64 @@
+# ==========================
+# Python / Backend
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+*.whl
+.venv/
+venv/
+env/
+.env
+.env.local
+*.db
+*.duckdb
+*.duckdb.wal
+
+# Ruff / mypy / pytest
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ==========================
+# Node / Frontend
+# ==========================
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+
+# ==========================
+# IDE / Editor
+# ==========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ==========================
+# Docker
+# ==========================
+*.log
+docker-compose.override.yml
+
+# ==========================
+# OS
+# ==========================
+desktop.ini
+ehthumbs.db
+
+# ==========================
+# Planning / GSD
+# ==========================
+.planning/
