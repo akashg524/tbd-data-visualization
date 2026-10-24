@@ -4,17 +4,17 @@
 
 See: `.planning/PROJECT.md` (updated 2026-10-22)
 
-**Core value:** Enable instantaneous (<1s) and cost-effective federated analytical queries and cross-source joins across 10–100 TB of heterogeneous read-only financial data stores directly into Power BI without commercial virtualization licensing fees.
-**Current focus:** Project Milestone 1 Complete — All 4 Phases Verified & Production Ready
+**Core value:** Enable instantaneous (<1s) and cost-effective federated analytical queries and cross-source joins across 10–100 TB of heterogeneous read-only financial data stores directly into Power BI without commercial virtualization licensing fees, secured with dynamic row-level security and data masking.
+**Current focus:** Milestone 2: Enterprise Governance, Row-Level Security (RLS) & Dynamic Masking — Phase 5
 
 ## Current Position
 
-Phase: 4 of 4 (Web SQL Studio, Enterprise Security & AKS Production Deployment)
-Plan: 3 of 3 in current phase
-Status: Complete (All 4 Phases executed, tested, and verified)
-Last activity: 2026-10-24 — Phase 4 execution complete (04-01 Monaco Web SQL Studio UI, 04-02 Entra ID SSO & RBAC, 04-03 AKS Helm Chart & Docker)
+Phase: 5 of 5 (Dynamic Row-Level Security (RLS), Column Masking & Regulatory Audit Trail)
+Plan: 0 of 3 in current phase
+Status: Ready to plan and execute Phase 5
+Last activity: 2026-10-24 — Milestone 2 initialized (Phase 5: RLS, DDM, and Regulatory Audit Trail)
 
-Progress: [██████████] 100%
+Progress: [░░░░░░░░░░] 0% (Milestone 2)
 
 ## Performance Metrics
 

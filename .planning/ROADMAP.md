@@ -11,6 +11,9 @@ A phased journey from foundational read-only connectors and Apache Iceberg catal
 - [x] **Phase 3: Speed Layer & Semantic Power BI Serving** - Implement two-tier result/dimension caching and PostgreSQL wire protocol / Arrow Flight gateway for Power BI DirectQuery.
 - [x] **Phase 4: Web SQL Studio, Enterprise Security & AKS Production Deployment** - Monaco SQL Studio, Entra ID SSO, Key Vault, and Helm/Kubernetes deployment manifests.
 
+### Milestone 2: Enterprise Governance, Row-Level Security & Column Masking
+- [ ] **Phase 5: Dynamic Row-Level Security (RLS), Column Masking & Regulatory Audit Trail** - SQLGlot AST RLS rewriter, declarative dynamic data masking, cross-protocol policy enforcement, and SOX/FINRA audit logging.
+
 ---
 
 ## Phase Details
@@ -73,3 +76,19 @@ Plans:
 - [x] 04-01: Monaco Web SQL Studio UI & Visual Query Cockpit
 - [x] 04-02: Microsoft Entra ID SSO & Role-Based Access Control
 - [x] 04-03: Multi-Stage Production Dockerfiles & AKS Helm Chart
+
+### Phase 5: Dynamic Row-Level Security (RLS), Column Masking & Regulatory Audit Trail
+**Goal**: Enforce fine-grained data governance by dynamically rewriting SQL queries to inject user claim-based row-level filters (RLS), masking sensitive PII/financial columns (DDM), maintaining cross-protocol enforcement, and emitting immutable SOX/FINRA audit logs.
+**Depends on**: Phase 4
+**Requirements**: [REQ-16: Entra ID Claim-to-Policy Mapping, REQ-17: Dynamic Row-Level Security (RLS) AST Filter Injection, REQ-18: Column-Level Dynamic Data Masking, REQ-19: Cross-Protocol RLS & Masking Uniformity, REQ-20: SOX/FINRA/Basel III Regulatory Audit Trail]
+**Success Criteria** (what must be TRUE):
+  1. SQLGlot query rewriter injects desk/tenant/region filter predicates into user queries before pushdown planning, verified across complex joins, subqueries, and CTEs.
+  2. Dynamic Data Masking redacts or partially masks sensitive columns for unprivileged roles while preserving raw access for compliance officers.
+  3. Row-level filters and column masking apply identically across REST API, Views, OData v4, PGWire (:5433), and Arrow Flight (:5005).
+  4. Structured audit log captures full query lifecycle, user identities, original and rewritten SQL, and export actions for compliance inspection.
+**Plans**: 3 plans
+
+Plans:
+- [ ] 05-01: Entra ID Governance Claim Mapping & Declarative Policy Engine
+- [ ] 05-02: SQLGlot AST RLS Rewriter & Column-Level Dynamic Data Masking Engine
+- [ ] 05-03: Cross-Protocol Policy Enforcement & SOX/FINRA Regulatory Audit Trail
