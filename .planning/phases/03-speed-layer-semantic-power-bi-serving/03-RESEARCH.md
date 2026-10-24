@@ -2,11 +2,13 @@
 
 ## Executive Summary
 
-Phase 3 builds the enterprise serving and acceleration layer that connects financial analysts and Power BI directly to the federated query engine built in Phase 2. The primary objective is to enable zero-driver, zero-cluster **Power BI DirectQuery** and high-throughput **Batch Import** over standard enterprise protocols:
+Phase 3 builds the enterprise serving and acceleration layer that connects financial analysts, Power BI, Excel, and downstream applications directly to the federated query engine built in Phase 2. Inspired by enterprise data virtualization platforms like **Denodo**, Phase 3 delivers data across multiple simultaneous protocols so each consumer can connect using their optimal native interface:
 
 1. **PostgreSQL Wire Protocol Gateway**: Allows Power BI Desktop and Power BI Service to connect natively via the built-in PostgreSQL connector using DirectQuery (no custom ODBC drivers required on corporate Windows workstations).
-2. **Apache Arrow Flight Server & REST Streaming**: Enables multi-gigabyte/second batch extraction into Power BI, Excel, and analytical Python notebooks with zero serialization overhead.
-3. **Two-Tier Acceleration Layer**:
+2. **Denodo-Style OData v4 Feed Service (`/api/v1/odata/`)**: Exposes catalog schemas and tables as standard OData v4 feeds with `$filter`, `$select`, `$top`, and `$skip` support. Directly consumable by **Excel** and **Power BI OData Feed** without database drivers or open TCP database ports.
+3. **Apache Arrow Flight Server & REST Streaming**: Enables multi-gigabyte/second batch extraction into Power BI, Excel, and analytical Python notebooks with zero serialization overhead.
+4. **One-Click PBIDS & ODC File Generators**: Downloads pre-configured `.pbids` (Power BI Data Source) and `.odc` (Office Data Connection) files so business analysts can launch Power BI or Excel pre-wired to federated datasets with one click.
+5. **Two-Tier Acceleration Layer**:
    - **Tier 1 (Result-Set Cache)**: Instantaneous (<5ms) responses for repeated dashboard slicer queries via SHA-256 fingerprinting.
    - **Tier 2 (Dimension Table Cache)**: In-memory pre-materialization of slow reference dimensions (e.g., Oracle counterparties, SQL Server GL accounts) to eliminate network hops across on-prem VPNs during cross-source joins.
 
@@ -17,6 +19,8 @@ Phase 3 builds the enterprise serving and acceleration layer that connects finan
 | Layer | Library / Tool | Version | Role & Justification |
 | :--- | :--- | :--- | :--- |
 | **PostgreSQL Wire Server** | `buenavista` | `^0.5.0` | Battle-tested, pure-Python PostgreSQL v3.0 wire protocol proxy (created by the `dbt-duckdb` author). Handles SSL negotiation (`SSLRequest`), authentication, parameter status, `RowDescription`, and `DataRow` packet encoding without C-extensions. |
+| **OData v4 & REST Views** | `fastapi` | `^0.115` | Exposes catalog tables as standard OData v4 endpoints (`$metadata`, `$filter`, `$select`, `$top`) for Excel and Power BI OData Feed. |
+| **One-Click Launchers** | `fastapi` | `^0.115` | Dynamically generates `.pbids` (Power BI Data Source) and `.odc` (Excel) connection descriptor files. |
 | **Columnar Streaming Server** | `pyarrow.flight` | `^19.0.1` | Native Arrow Flight server (`FlightServerBase`) built into PyArrow. Streams Arrow `RecordBatch` streams over gRPC at multi-GB/s with zero-copy memory transfers. |
 | **HTTP Batch Export** | `fastapi` + `starlette` | `^0.115` | Chunked `StreamingResponse` for CSV, Parquet, and NDJSON consumption via Power BI Web Connector (`Web.Contents`) and Excel. |
 | **Vectorized In-Memory DB** | `duckdb` | `^1.5.6` | Backing engine for `buenavista` sessions, hosting standard `information_schema` and `pg_catalog` metadata views queried by Power BI Navigator. |
