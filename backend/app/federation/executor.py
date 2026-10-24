@@ -16,7 +16,7 @@ from app.federation.compiler import PushdownCompiler
 from app.federation.parser import SQLParser
 
 if TYPE_CHECKING:
-    from app.cache import ResultCache
+    from app.cache import DimensionCache, ResultCache
     from app.catalog import UnifiedCatalogRegistry
     from app.federation.compiler import SubqueryPlan
 
@@ -43,12 +43,14 @@ class FederatedExecutor:
         self,
         catalog: UnifiedCatalogRegistry,
         cache: ResultCache | None = None,
+        dimension_cache: DimensionCache | None = None,
         scratch_dir: str = "./scratch",
         default_timeout: float = 60.0,
         max_memory: str = "4GB",
     ) -> None:
         self.catalog = catalog
         self.cache = cache
+        self.dimension_cache = dimension_cache
         self.scratch_dir = scratch_dir
         self.default_timeout = default_timeout
         self.max_memory = max_memory
@@ -150,6 +152,38 @@ class FederatedExecutor:
         # 4. Multi-Source Federated Join
         async def fetch_subquery(alias: str, plan: SubqueryPlan) -> tuple[str, pa.Table, float]:
             sub_t0 = time.perf_counter()
+            full_path = f"{plan.datasource_name}.{plan.schema_name}.{plan.table_name}".lower()
+
+            # Fast-path Tier 2: Check if table is cached in DimensionCache
+            if self.dimension_cache and self.dimension_cache.is_dimension_cached(full_path):
+                dim_tbl = await self.dimension_cache.get_dimension(full_path)
+                if dim_tbl is not None:
+                    # If plan.sql has WHERE filters, evaluate them on in-memory Arrow table in DuckDB
+                    if "where " in plan.sql.lower():
+                        temp_con = duckdb.connect()
+                        try:
+                            temp_con.register("raw_dim", dim_tbl)
+                            if plan.schema_name and plan.schema_name.lower() != "default":
+                                temp_con.execute(f"CREATE SCHEMA IF NOT EXISTS {plan.schema_name}")
+                                view_sql = f"CREATE VIEW {plan.schema_name}.{plan.table_name} AS SELECT * FROM raw_dim"  # noqa: S608
+                                temp_con.execute(view_sql)
+                            else:
+                                view_sql = f"CREATE VIEW {plan.table_name} AS SELECT * FROM raw_dim"  # noqa: S608
+                                temp_con.execute(view_sql)
+                            res = temp_con.sql(plan.sql).arrow()
+                            dim_tbl = res.read_all() if hasattr(res, "read_all") else res
+                        finally:
+                            temp_con.close()
+
+                    sub_elapsed = (time.perf_counter() - sub_t0) * 1000
+                    logger.debug(
+                        "dimension_cache_substituted",
+                        alias=alias,
+                        table=full_path,
+                        elapsed_ms=round(sub_elapsed, 2),
+                    )
+                    return alias, dim_tbl, round(sub_elapsed, 2)
+
             connector = self.catalog.get_connector(plan.datasource_name)
             try:
                 arrow_tbl = await asyncio.wait_for(
