@@ -108,6 +108,20 @@ class SQLParser:
                 if alias:
                     cte_aliases.add(alias.lower())
 
+        # Extract limit
+        limit: int | None = None
+        limit_node = ast.find(exp.Limit)
+        if limit_node and limit_node.expression:
+            with contextlib.suppress(ValueError, TypeError, AttributeError):
+                limit = int(limit_node.expression.this)
+        else:
+            fetch_node = ast.find(exp.Fetch)
+            if fetch_node:
+                target = fetch_node.expression or fetch_node.this
+                if target:
+                    with contextlib.suppress(ValueError, TypeError):
+                        limit = int(str(target))
+
         # Extract table references
         table_nodes = list(ast.find_all(exp.Table))
         tables: list[TableReference] = []
@@ -189,8 +203,18 @@ class SQLParser:
             table_refs[alias] = ref
             datasources_seen.add(ds_name)
 
+        # If no tables are referenced (e.g. SELECT 1 or SELECT 'hello'), treat as scalar query
         if not tables:
-            raise ValueError("Query does not reference any valid tables.")
+            return ParsedQuery(
+                raw_sql=sql,
+                ast=ast,
+                tables=[],
+                aliases={},
+                table_refs={},
+                is_multi_source=False,
+                columns_by_alias={},
+                limit=limit,
+            )
 
         is_multi_source = len(datasources_seen) > 1
 
@@ -284,20 +308,6 @@ class SQLParser:
                             f"Unqualified column '{col_name}' in multi-table query. "
                             "Please qualify with table alias (e.g. alias.column_name)."
                         )
-
-        # Extract limit
-        limit: int | None = None
-        limit_node = ast.find(exp.Limit)
-        if limit_node and limit_node.expression:
-            with contextlib.suppress(ValueError, TypeError, AttributeError):
-                limit = int(limit_node.expression.this)
-        else:
-            fetch_node = ast.find(exp.Fetch)
-            if fetch_node:
-                target = fetch_node.expression or fetch_node.this
-                if target:
-                    with contextlib.suppress(ValueError, TypeError):
-                        limit = int(str(target))
 
         return ParsedQuery(
             raw_sql=sql,
