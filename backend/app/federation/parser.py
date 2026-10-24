@@ -149,8 +149,30 @@ class SQLParser:
                 schema_name = db_name
                 table_name = tbl_name
             elif db_name and tbl_name:
-                # 2-part name (schema.table)
-                if catalog and len(catalog.list_datasources()) == 1:
+                # 2-part name (schema.table or datasource.table)
+                matched_2part: list[tuple[str, str, str]] = []
+                if catalog:
+                    if db_name in catalog.list_datasources():
+                        matched_2part.append((db_name, "default", tbl_name))
+                    for d_name in catalog.list_datasources():
+                        schemas = catalog._schema_cache.get(d_name, {})
+                        if db_name in schemas:
+                            if any(t.name.lower() == tbl_name.lower() for t in schemas[db_name]):
+                                matched_2part.append((d_name, db_name, tbl_name))
+                            elif not schemas[db_name]:
+                                matched_2part.append((d_name, db_name, tbl_name))
+                    suffix = f".{db_name.lower()}.{tbl_name.lower()}"
+                    for t_key in catalog._table_cache:
+                        if t_key.lower().endswith(suffix):
+                            p = t_key.split(".")
+                            cand = (p[0], p[1], p[2])
+                            if cand not in matched_2part:
+                                matched_2part.append(cand)
+
+                if len(matched_2part) == 1:
+                    ds_name, schema_name, table_name = matched_2part[0]
+                    raw_name = f"{ds_name}.{schema_name}.{table_name}"
+                elif catalog and len(catalog.list_datasources()) == 1:
                     ds_name = catalog.list_datasources()[0]
                     schema_name = db_name
                     table_name = tbl_name
@@ -162,7 +184,17 @@ class SQLParser:
                     )
             elif tbl_name:
                 # 1-part name
-                if catalog and len(catalog.list_datasources()) == 1:
+                matched_1part: list[tuple[str, str, str]] = []
+                if catalog:
+                    for d_name, schemas in catalog._schema_cache.items():
+                        for s_name, tables in schemas.items():
+                            if any(t.name.lower() == tbl_name.lower() for t in tables):
+                                matched_1part.append((d_name, s_name, tbl_name))
+
+                if len(matched_1part) == 1:
+                    ds_name, schema_name, table_name = matched_1part[0]
+                    raw_name = f"{ds_name}.{schema_name}.{table_name}"
+                elif catalog and len(catalog.list_datasources()) == 1:
                     ds_name = catalog.list_datasources()[0]
                     schema_name = "default"
                     table_name = tbl_name
