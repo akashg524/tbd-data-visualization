@@ -156,11 +156,11 @@ class SQLParser:
                         matched_2part.append((db_name, "default", tbl_name))
                     for d_name in catalog.list_datasources():
                         schemas = catalog._schema_cache.get(d_name, {})
-                        if db_name in schemas:
-                            if any(t.name.lower() == tbl_name.lower() for t in schemas[db_name]):
-                                matched_2part.append((d_name, db_name, tbl_name))
-                            elif not schemas[db_name]:
-                                matched_2part.append((d_name, db_name, tbl_name))
+                        if db_name in schemas and (
+                            not schemas[db_name]
+                            or any(t.name.lower() == tbl_name.lower() for t in schemas[db_name])
+                        ):
+                            matched_2part.append((d_name, db_name, tbl_name))
                     suffix = f".{db_name.lower()}.{tbl_name.lower()}"
                     for t_key in catalog._table_cache:
                         if t_key.lower().endswith(suffix):

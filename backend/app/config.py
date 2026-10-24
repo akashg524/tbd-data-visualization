@@ -35,6 +35,15 @@ class Settings(BaseSettings):
     upload_dir: str = "./uploads"
     max_upload_size_mb: int = 500
 
+    # --- Serving Gateways ---
+    enable_pgwire: bool = True
+    pgwire_host: str = "0.0.0.0"  # noqa: S104
+    pgwire_port: int = 5433
+
+    enable_flight: bool = True
+    flight_host: str = "0.0.0.0"  # noqa: S104
+    flight_port: int = 5005
+
 
 @lru_cache
 def get_settings() -> Settings:
