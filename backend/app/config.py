@@ -44,6 +44,12 @@ class Settings(BaseSettings):
     flight_host: str = "0.0.0.0"  # noqa: S104
     flight_port: int = 5005
 
+    # --- Authentication & Enterprise Security ---
+    auth_enabled: bool = False
+    entra_tenant_id: str = ""
+    entra_client_id: str = ""
+    entra_jwks_cache_ttl: int = 86400
+
 
 @lru_cache
 def get_settings() -> Settings:

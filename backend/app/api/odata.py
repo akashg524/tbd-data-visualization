@@ -6,16 +6,17 @@ import re
 from typing import Any
 from xml.sax.saxutils import escape as xml_escape
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, Field
 
 from app.api.query import federated_executor
 from app.api.views import IDENTIFIER_REGEX, resolve_view_path
+from app.auth import require_roles
 from app.catalog import catalog as default_catalog
 from app.connectors.models import ColumnMetadata, DataType
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_roles("FinancialAnalyst", "DataEngineer"))])
 
 EDM_TYPE_MAP = {
     DataType.STRING: "Edm.String",

@@ -4,14 +4,15 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
+from app.auth import require_roles
 from app.cache import ResultCache
 from app.catalog import catalog as default_catalog
 from app.federation.executor import FederatedExecutor
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_roles("FinancialAnalyst", "DataEngineer"))])
 
 # Global execution instances
 query_cache = ResultCache(default_ttl=60)

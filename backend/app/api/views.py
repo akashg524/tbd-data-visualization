@@ -7,14 +7,15 @@ import re
 from typing import Any
 
 import pyarrow.csv as pcsv
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import Response
 from pydantic import BaseModel
 
 from app.api.query import federated_executor
+from app.auth import require_roles
 from app.catalog import catalog as default_catalog
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_roles("FinancialAnalyst", "DataEngineer"))])
 
 IDENTIFIER_REGEX = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 

@@ -8,13 +8,14 @@ from typing import Any
 
 import pyarrow.csv as pcsv
 import pyarrow.parquet as pq
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.api.query import federated_executor
+from app.auth import require_roles
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_roles("FinancialAnalyst", "DataEngineer"))])
 
 
 class ExportRequest(BaseModel):
