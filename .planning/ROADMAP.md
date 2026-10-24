@@ -53,7 +53,12 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Power BI Desktop connects via standard PostgreSQL connector and issues DirectQuery requests.
   2. Repeated dashboard queries return in <5ms from in-memory cache.
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 03-01: Two-Tier Dimension Cache, OData v4 Feeds & One-Click Launchers
+- [ ] 03-02: PostgreSQL Wire Protocol Gateway & Power BI DirectQuery Server
+- [ ] 03-03: Apache Arrow Flight Server & Columnar Batch Ingestion
 
 ### Phase 4: Web SQL Studio, Enterprise Security & AKS Production Deployment
 **Goal**: Provide internal Monaco SQL Studio, Microsoft Entra ID authentication, and production Kubernetes packaging.
