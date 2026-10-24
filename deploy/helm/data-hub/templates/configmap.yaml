@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  ENVIRONMENT: {{ .Values.global.environment | quote }}
+  LOG_LEVEL: {{ .Values.backend.env.logLevel | quote }}
+  DUCKDB_MEMORY_LIMIT: {{ .Values.backend.env.duckdbMemoryLimit | quote }}
+  DUCKDB_THREADS: {{ .Values.backend.env.duckdbThreads | quote }}
+  DUCKDB_TEMP_DIRECTORY: {{ .Values.backend.env.duckdbTempDirectory | quote }}
+  AUTH_ENABLED: {{ .Values.backend.env.authEnabled | quote }}
+  ENTRA_TENANT_ID: {{ .Values.backend.env.entraTenantId | quote }}
+  ENTRA_CLIENT_ID: {{ .Values.backend.env.entraClientId | quote }}
+  ENTRA_JWKS_CACHE_TTL: {{ .Values.backend.env.entraJwksCacheTtl | quote }}
+  ENABLE_PGWIRE: {{ .Values.backend.env.enablePgwire | quote }}
+  ENABLE_FLIGHT: {{ .Values.backend.env.enableFlight | quote }}
+  CORS_ORIGINS: {{ .Values.backend.env.corsOrigins | quote }}
+  PORT: {{ .Values.backend.ports.http | quote }}
+  PGWIRE_PORT: {{ .Values.backend.ports.pgwire | quote }}
+  FLIGHT_PORT: {{ .Values.backend.ports.flight | quote }}

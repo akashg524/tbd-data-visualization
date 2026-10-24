@@ -1,18 +1,60 @@
-FROM python:3.13-slim
+# Stage 1: Build dependencies & wheels
+FROM python:3.13-slim AS builder
+
+WORKDIR /build
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY pyproject.toml ./
+RUN pip install --no-cache-dir --upgrade pip wheel && \
+    pip wheel --no-cache-dir --wheel-dir /build/wheels -e .
+
+# Stage 2: Hardened Production Runtime
+FROM python:3.13-slim AS runtime
 
 WORKDIR /app
 
-# System deps for database drivers
+# Install minimal runtime shared libraries (libpq5, curl for healthcheck)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc libpq-dev curl && \
-    rm -rf /var/lib/apt/lists/*
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml ./
-RUN pip install --no-cache-dir -e ".[dev]"
+# Create dedicated non-root service user
+RUN groupadd -g 10001 appgroup && \
+    useradd -u 10001 -g appgroup -m -s /bin/bash appuser
 
-COPY backend/ ./backend/
+# Create scratch directory for DuckDB out-of-core spill and uploads
+RUN mkdir -p /scratch /app/uploads && \
+    chown -R appuser:appgroup /scratch /app
 
-ENV PYTHONPATH=/app/backend
-EXPOSE 8000
+# Copy wheels from builder and install
+COPY --from=builder /build/wheels /wheels
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir /wheels/*.whl && \
+    rm -rf /wheels
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Copy application source code
+COPY --chown=appuser:appgroup pyproject.toml ./
+COPY --chown=appuser:appgroup backend/ ./backend/
+
+# Set environment variables
+ENV PYTHONPATH=/app/backend \
+    PYTHONUNBUFFERED=1 \
+    DUCKDB_TEMP_DIRECTORY=/scratch \
+    PORT=8000 \
+    PGWIRE_PORT=5433 \
+    FLIGHT_PORT=5005
+
+USER appuser
+
+EXPOSE 8000 5433 5005
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/api/v1/health || exit 1
+
+ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: data-hub
+description: Production Helm chart for Federated Semantic Data Hub on Azure Kubernetes Service (AKS)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+maintainers:
+  - name: Data Platform Engineering
+    email: dataplatform@enterprise.com

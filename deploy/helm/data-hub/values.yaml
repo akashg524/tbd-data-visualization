@@ -1,0 +1,103 @@
+# Default production values for data-hub Helm deployment on AKS
+
+global:
+  environment: production
+  domain: data-hub.enterprise.com
+
+backend:
+  replicaCount: 2
+  image:
+    repository: myacr.azurecr.io/financial-data-hub/backend
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+
+  ports:
+    http: 8000
+    pgwire: 5433
+    flight: 5005
+
+  # Out-of-core scratch volume mounted from local NVMe/SSD on AKS worker nodes
+  scratchVolume:
+    enabled: true
+    mountPath: /scratch
+    sizeLimit: 100Gi
+
+  resources:
+    requests:
+      cpu: 4000m
+      memory: 16Gi
+    limits:
+      cpu: 8000m
+      memory: 32Gi
+
+  env:
+    logLevel: INFO
+    duckdbMemoryLimit: 24GB
+    duckdbThreads: 8
+    duckdbTempDirectory: /scratch
+    authEnabled: true
+    entraTenantId: "00000000-0000-0000-0000-000000000000"
+    entraClientId: "api://financial-data-hub"
+    entraJwksCacheTtl: 86400
+    enablePgwire: true
+    enableFlight: true
+    corsOrigins: "https://data-hub.enterprise.com"
+
+frontend:
+  replicaCount: 2
+  image:
+    repository: myacr.azurecr.io/financial-data-hub/frontend
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+
+  ports:
+    http: 80
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+service:
+  type: LoadBalancer
+  backendServiceName: data-hub-backend
+  frontendServiceName: data-hub-frontend
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  ports:
+    http: 8000
+    pgwire: 5433
+    flight: 5005
+
+ingress:
+  enabled: true
+  className: webapprouting.kubernetes.azure.com
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+  hosts:
+    - host: data-hub.enterprise.com
+      paths:
+        - path: /api/v1
+          pathType: Prefix
+          backend:
+            service:
+              name: data-hub-backend
+              port: 8000
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: data-hub-frontend
+              port: 80
+  tls:
+    - secretName: data-hub-tls
+      hosts:
+        - data-hub.enterprise.com
+
+secrets:
+  createSecret: true
+  encryptionKey: ""
