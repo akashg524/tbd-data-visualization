@@ -40,7 +40,11 @@ Plans:
   1. SQL queries joining ADLS Iceberg with Oracle/SQL Server parse and decompose into source-specific subqueries.
   2. Predicate filters and column projections are pushed down natively to Oracle and SQL Server.
   3. DuckDB joins incoming Arrow record batches in memory at sub-second speeds.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01: SQL AST Parser & Pushdown Predicate Compiler
+- [ ] 02-02: Federated Execution Engine & In-Memory Hash Joiner
 
 ### Phase 3: Speed Layer & Semantic Power BI Serving
 **Goal**: Enable Power BI DirectQuery and scheduled import via PostgreSQL wire-protocol listener and REST/Arrow Flight endpoints with two-tier caching.
