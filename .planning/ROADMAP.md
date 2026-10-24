@@ -67,4 +67,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Analysts can query, test, and explain federated queries in a web-based Monaco SQL Studio.
   2. System deploys to AKS with VNet peering to on-premises networks.
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 04-01: Monaco Web SQL Studio UI & Visual Query Cockpit
+- [ ] 04-02: Microsoft Entra ID SSO & Role-Based Access Control
+- [ ] 04-03: Multi-Stage Production Dockerfiles & AKS Helm Chart
