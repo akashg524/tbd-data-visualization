@@ -56,7 +56,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Two-Tier Dimension Cache, OData v4 Feeds & One-Click Launchers
+- [ ] 03-01: Two-Tier Dimension Cache, RESTful Views API & OData v4 Feeds
 - [ ] 03-02: PostgreSQL Wire Protocol Gateway & Power BI DirectQuery Server
 - [ ] 03-03: Apache Arrow Flight Server & Columnar Batch Ingestion
 
