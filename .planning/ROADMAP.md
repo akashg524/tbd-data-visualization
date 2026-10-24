@@ -8,7 +8,7 @@ A phased journey from foundational read-only connectors and Apache Iceberg catal
 
 - [x] **Phase 1: High-Performance Read-Only Connectors & Iceberg Catalog** - Connect ADLS Gen2 Iceberg, Oracle, SQL Server, Azure SQL, and Cosmos DB with unified metadata introspection.
 - [x] **Phase 2: Hybrid Federated Query Planner & In-Memory Join Engine** - Build predicate pushdown query compiler and vectorized DuckDB hash joiner with Arrow streaming.
-- [ ] **Phase 3: Speed Layer & Semantic Power BI Serving** - Implement two-tier result/dimension caching and PostgreSQL wire protocol / Arrow Flight gateway for Power BI DirectQuery.
+- [x] **Phase 3: Speed Layer & Semantic Power BI Serving** - Implement two-tier result/dimension caching and PostgreSQL wire protocol / Arrow Flight gateway for Power BI DirectQuery.
 - [ ] **Phase 4: Web SQL Studio, Enterprise Security & AKS Production Deployment** - Monaco SQL Studio, Entra ID SSO, Key Vault, and Helm/Kubernetes deployment manifests.
 
 ---
@@ -56,9 +56,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Two-Tier Dimension Cache, RESTful Views API & OData v4 Feeds
-- [ ] 03-02: PostgreSQL Wire Protocol Gateway & Power BI DirectQuery Server
-- [ ] 03-03: Apache Arrow Flight Server & Columnar Batch Ingestion
+- [x] 03-01: Two-Tier Dimension Cache, RESTful Views API & OData v4 Feeds
+- [x] 03-02: PostgreSQL Wire Protocol Gateway & Power BI DirectQuery Server
+- [x] 03-03: Apache Arrow Flight Server & Columnar Batch Ingestion
 
 ### Phase 4: Web SQL Studio, Enterprise Security & AKS Production Deployment
 **Goal**: Provide internal Monaco SQL Studio, Microsoft Entra ID authentication, and production Kubernetes packaging.
