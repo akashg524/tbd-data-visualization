@@ -47,6 +47,9 @@ class EntraIDAuthenticator:
                 "name": "Dev Analyst",
                 "preferred_username": "dev-analyst@enterprise.com",
                 "roles": ["FinancialAnalyst", "DataEngineer", "SecurityAdmin"],
+                "trading_desks": ["FX", "EQUITY"],
+                "regions": ["US", "EMEA"],
+                "allowed_accounts": ["ACC-101", "ACC-104"],
             }
 
         if not credentials:
