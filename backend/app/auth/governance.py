@@ -179,14 +179,20 @@ class GovernancePolicyRegistry:
         self._policies.append(policy)
 
     def get_policy_for_table(self, table_path: str) -> TableSecurityPolicy | None:
-        """Find matching policy using pattern matching (e.g. *.trades matches adls_lake.equity.trades)."""
+        """Find matching policy using pattern matching (e.g. *.trades matches adls_lake.equity.trades and trades)."""
         normalized_path = table_path.lower()
         parts = normalized_path.split(".")
         simple_name = parts[-1] if parts else normalized_path
 
         for policy in self._policies:
             pat = policy.table_pattern.lower()
-            if fnmatch.fnmatch(normalized_path, pat) or fnmatch.fnmatch(simple_name, pat):
+            base_name = pat[2:] if pat.startswith("*.") else pat
+            if (
+                fnmatch.fnmatch(normalized_path, pat)
+                or fnmatch.fnmatch(simple_name, pat)
+                or simple_name == base_name
+                or normalized_path == base_name
+            ):
                 return policy
         return None
 
