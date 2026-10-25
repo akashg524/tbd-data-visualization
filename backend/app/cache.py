@@ -152,16 +152,25 @@ class ResultCache:
         self.default_ttl = default_ttl
 
     @staticmethod
-    def compute_fingerprint(sql: str, params: dict[str, Any] | None = None) -> str:
-        """Generate SHA-256 fingerprint hash from normalized SQL query and parameters."""
+    def compute_fingerprint(
+        sql: str,
+        params: dict[str, Any] | None = None,
+        security_fingerprint: str = "",
+    ) -> str:
+        """Generate SHA-256 fingerprint hash from normalized SQL query, parameters, and security fingerprint."""
         normalized = " ".join(sql.strip().lower().split())
         param_str = json.dumps(params or {}, sort_keys=True)
-        payload = f"{normalized}::{param_str}"
+        payload = f"{normalized}::{param_str}::sec={security_fingerprint}"
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
-    async def get(self, sql: str, params: dict[str, Any] | None = None) -> pa.Table | None:
+    async def get(
+        self,
+        sql: str,
+        params: dict[str, Any] | None = None,
+        security_fingerprint: str = "",
+    ) -> pa.Table | None:
         """Fetch cached Arrow table if available and unexpired."""
-        key = self.compute_fingerprint(sql, params)
+        key = self.compute_fingerprint(sql, params, security_fingerprint=security_fingerprint)
         raw_buffer = await self.backend.get(key)
         if raw_buffer is None:
             return None
@@ -182,9 +191,10 @@ class ResultCache:
         table: pa.Table,
         ttl_seconds: int | None = None,
         params: dict[str, Any] | None = None,
+        security_fingerprint: str = "",
     ) -> None:
         """Serialize Arrow table using Feather with zstd compression and store in cache."""
-        key = self.compute_fingerprint(sql, params)
+        key = self.compute_fingerprint(sql, params, security_fingerprint=security_fingerprint)
         ttl = ttl_seconds if ttl_seconds is not None else self.default_ttl
 
         try:

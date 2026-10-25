@@ -59,7 +59,8 @@ desktop.ini
 ehthumbs.db
 
 # ==========================
-# Planning / GSD
+# Planning / GSD / Agents
 # ==========================
 # .planning is tracked in git for project memory
+.agents/
 

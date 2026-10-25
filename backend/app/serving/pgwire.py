@@ -13,6 +13,7 @@ from buenavista.backends.duckdb import DuckDBQueryResult, DuckDBSession
 from buenavista.core import Connection, QueryResult, Session
 from buenavista.postgres import BuenaVistaServer
 
+from app.auth.governance import SecurityContext
 from app.catalog import UnifiedCatalogRegistry
 from app.catalog import catalog as default_catalog
 from app.connectors.models import DataType
@@ -61,12 +62,21 @@ class FederatedSession(Session):
         executor: FederatedExecutor,
         catalog: UnifiedCatalogRegistry,
         loop: asyncio.AbstractEventLoop | None = None,
+        security_context: SecurityContext | None = None,
     ) -> None:
         super().__init__()
         self.duck_session = duck_session
         self.executor = executor
         self.catalog = catalog
         self.loop = loop
+        self.security_context = security_context or SecurityContext(
+            user_id="pgwire_analyst",
+            username="pgwire_analyst@contoso.com",
+            roles=["FinancialAnalyst"],
+            trading_desks=["FX", "EQUITIES"],
+            regions=["US", "EMEA"],
+            allowed_accounts=["ACC-001", "ACC-002"],
+        )
 
     def in_transaction(self) -> bool:
         """Report whether session is inside an active transaction."""
@@ -115,7 +125,12 @@ class FederatedSession(Session):
         # 4. Analytical federated query: execute via FederatedExecutor
         logger.info("pgwire_dispatch_analytical_query", sql=clean)
         try:
-            table, _metrics = run_async(self.executor.execute(clean), self.loop)
+            table, _metrics = run_async(
+                self.executor.execute(
+                    clean, security_context=self.security_context, protocol="PGWire"
+                ),
+                self.loop,
+            )
             return DuckDBQueryResult(table.to_reader())
         except Exception as exc:
             logger.error("pgwire_query_failed", sql=clean, error=str(exc))

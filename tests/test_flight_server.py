@@ -112,6 +112,16 @@ def flight_catalog() -> UnifiedCatalogRegistry:
             ColumnMetadata(name="amount", data_type=DataType.FLOAT),
         ],
     )
+    cat._table_cache["oracle_dw.risk.counterparties"] = TableSchema(
+        table_name="counterparties",
+        schema_name="risk",
+        columns=[
+            ColumnMetadata(name="id", data_type=DataType.INTEGER, is_primary_key=True),
+            ColumnMetadata(name="name", data_type=DataType.STRING),
+            ColumnMetadata(name="credit_limit", data_type=DataType.FLOAT),
+            ColumnMetadata(name="country", data_type=DataType.STRING),
+        ],
+    )
 
     return cat
 

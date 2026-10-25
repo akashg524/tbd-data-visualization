@@ -12,10 +12,14 @@ from fastapi.responses import Response
 from pydantic import BaseModel
 
 from app.api.query import federated_executor
-from app.auth import require_roles
+from app.auth import SecurityContext, get_security_context, require_roles
 from app.catalog import catalog as default_catalog
 
-router = APIRouter(dependencies=[Depends(require_roles("FinancialAnalyst", "DataEngineer"))])
+router = APIRouter(
+    dependencies=[
+        Depends(require_roles("FinancialAnalyst", "DataEngineer", "Trader", "ComplianceAdmin"))
+    ]
+)
 
 IDENTIFIER_REGEX = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 
@@ -121,6 +125,7 @@ async def query_view(
     sort: str | None = Query(None, description="Column to sort by. Prefix with - for descending"),
     limit: int = Query(100, ge=1, le=10000, description="Maximum rows to return"),
     offset: int = Query(0, ge=0, description="Row offset for pagination"),
+    context: SecurityContext = Depends(get_security_context),  # noqa: B008
 ) -> Response:
     """Query a table view with filtering, projection, sorting, and format negotiation."""
     if not IDENTIFIER_REGEX.match(schema) or not IDENTIFIER_REGEX.match(table):
@@ -202,7 +207,11 @@ async def query_view(
     sql = f"SELECT {select_clause} FROM {full_path}{where_sql}{order_sql} LIMIT {limit}{offset_sql}"  # noqa: S608
 
     try:
-        arrow_table, metrics = await federated_executor.execute(sql)
+        arrow_table, metrics = await federated_executor.execute(
+            sql, security_context=context, protocol="REST"
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=400, detail=f"View query execution failed: {exc}") from exc
 

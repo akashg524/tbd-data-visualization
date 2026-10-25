@@ -7,12 +7,16 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from app.auth import require_roles
+from app.auth import SecurityContext, get_security_context, require_roles
 from app.cache import ResultCache
 from app.catalog import catalog as default_catalog
 from app.federation.executor import FederatedExecutor
 
-router = APIRouter(dependencies=[Depends(require_roles("FinancialAnalyst", "DataEngineer"))])
+router = APIRouter(
+    dependencies=[
+        Depends(require_roles("FinancialAnalyst", "DataEngineer", "Trader", "ComplianceAdmin"))
+    ]
+)
 
 # Global execution instances
 query_cache = ResultCache(default_ttl=60)
@@ -36,6 +40,8 @@ class ExecutionMetricsModel(BaseModel):
     row_count: int
     cache_hit: bool
     scratch_spill_enabled: bool
+    applied_rls_filters: list[str] = Field(default_factory=list)
+    secured_sql: str | None = None
 
 
 class QueryResponse(BaseModel):
@@ -48,10 +54,18 @@ class QueryResponse(BaseModel):
 
 
 @router.post("/execute", response_model=QueryResponse)
-async def execute_query(payload: QueryRequest) -> QueryResponse:
-    """Execute a federated SQL query with execution metrics and caching."""
+async def execute_query(
+    payload: QueryRequest,
+    context: SecurityContext = Depends(get_security_context),  # noqa: B008
+) -> QueryResponse:
+    """Execute a federated SQL query with execution metrics, dynamic RLS, and caching."""
     try:
-        arrow_table, metrics = await federated_executor.execute(payload.sql, limit=payload.limit)
+        arrow_table, metrics = await federated_executor.execute(
+            payload.sql,
+            limit=payload.limit,
+            security_context=context,
+            protocol="REST",
+        )
 
         columns = arrow_table.column_names
         rows_pydict = arrow_table.to_pydict()
@@ -69,6 +83,8 @@ async def execute_query(payload: QueryRequest) -> QueryResponse:
             row_count=metrics.row_count,
             cache_hit=metrics.cache_hit,
             scratch_spill_enabled=metrics.scratch_spill_enabled,
+            applied_rls_filters=metrics.applied_rls_filters,
+            secured_sql=metrics.secured_sql,
         )
 
         return QueryResponse(
@@ -77,6 +93,8 @@ async def execute_query(payload: QueryRequest) -> QueryResponse:
             row_count=row_count,
             metrics=metrics_model,
         )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except TimeoutError as exc:
         raise HTTPException(status_code=504, detail=str(exc)) from exc
     except ValueError as exc:

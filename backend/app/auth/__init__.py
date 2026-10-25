@@ -1,5 +1,6 @@
 """Authentication, Role-Based Access Control, and Data Governance module."""
 
+from app.auth.audit import AuditLogger, audit_logger
 from app.auth.entra import EntraIDAuthenticator, authenticator
 from app.auth.governance import (
     AclRule,
@@ -14,6 +15,7 @@ from app.auth.rbac import Role, get_security_context, require_roles
 
 __all__ = [
     "AclRule",
+    "AuditLogger",
     "EntraIDAuthenticator",
     "GateType",
     "GovernancePolicyRegistry",
@@ -21,6 +23,7 @@ __all__ = [
     "Role",
     "SecurityContext",
     "TableSecurityPolicy",
+    "audit_logger",
     "authenticator",
     "get_security_context",
     "governance_registry",

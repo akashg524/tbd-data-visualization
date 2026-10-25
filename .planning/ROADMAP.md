@@ -12,7 +12,7 @@ A phased journey from foundational read-only connectors and Apache Iceberg catal
 - [x] **Phase 4: Web SQL Studio, Enterprise Security & AKS Production Deployment** - Monaco SQL Studio, Entra ID SSO, Key Vault, and Helm/Kubernetes deployment manifests.
 
 ### Milestone 2: Enterprise Governance, Row-Level Security & Column Masking
-- [ ] **Phase 5: Dynamic Row-Level Security (RLS), Column Masking & Regulatory Audit Trail** - SQLGlot AST RLS rewriter, declarative dynamic data masking, cross-protocol policy enforcement, and SOX/FINRA audit logging.
+- [x] **Phase 5: Dynamic Row-Level Security (RLS), Column Masking & Regulatory Audit Trail** - SQLGlot AST RLS rewriter, declarative dynamic data masking, cross-protocol policy enforcement, and SOX/FINRA audit logging.
 
 ---
 
@@ -89,6 +89,6 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: Entra ID Governance Claim Mapping & Declarative Policy Engine
-- [ ] 05-02: SQLGlot AST RLS Rewriter & Column-Level Dynamic Data Masking Engine
-- [ ] 05-03: Cross-Protocol Policy Enforcement & SOX/FINRA Regulatory Audit Trail
+- [x] 05-01: Entra ID Governance Claim Mapping & Declarative Policy Engine
+- [x] 05-02: SQLGlot AST RLS Rewriter & Column-Level Dynamic Data Masking Engine
+- [x] 05-03: Cross-Protocol Policy Enforcement & SOX/FINRA Regulatory Audit Trail

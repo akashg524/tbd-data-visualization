@@ -14,8 +14,15 @@ from pydantic import BaseModel, Field
 
 from app.api.query import federated_executor
 from app.auth import require_roles
+from app.auth.audit import audit_logger
+from app.auth.governance import SecurityContext
+from app.auth.rbac import get_security_context
 
-router = APIRouter(dependencies=[Depends(require_roles("FinancialAnalyst", "DataEngineer"))])
+router = APIRouter(
+    dependencies=[
+        Depends(require_roles("FinancialAnalyst", "DataEngineer", "Trader", "ComplianceAdmin"))
+    ]
+)
 
 
 class ExportRequest(BaseModel):
@@ -32,6 +39,7 @@ async def build_export_response(
     export_format: str,
     limit: int | None,
     filename: str,
+    security_context: SecurityContext | None = None,
 ) -> Response:
     """Execute SQL query and generate streaming format response."""
     fmt = export_format.lower().strip()
@@ -42,11 +50,24 @@ async def build_export_response(
         )
 
     try:
-        arrow_table, _metrics = await federated_executor.execute(sql, limit=limit)
+        arrow_table, _metrics = await federated_executor.execute(
+            sql, limit=limit, security_context=security_context, protocol="Export"
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=400, detail=f"Export query failed: {exc}") from exc
 
     safe_filename = "".join(c for c in filename if c.isalnum() or c in ("-", "_")) or "export"
+
+    # Emit export audit event
+    audit_logger.log_export_event(
+        context=security_context,
+        format=fmt,
+        row_count=arrow_table.num_rows,
+        filename=safe_filename,
+        protocol="Export",
+    )
 
     if fmt == "csv":
         out_buf = io.BytesIO()
@@ -87,12 +108,18 @@ async def export_query_get(
     format: str = Query("csv", description="Format: 'csv', 'parquet', 'ndjson'"),
     limit: int | None = Query(None, ge=1, le=1000000, description="Row limit"),
     filename: str = Query("export", description="Basename for downloaded file"),
+    context: SecurityContext = Depends(get_security_context),  # noqa: B008
 ) -> Response:
     """Stream export query results via HTTP GET."""
-    return await build_export_response(sql, format, limit, filename)
+    return await build_export_response(sql, format, limit, filename, security_context=context)
 
 
 @router.post("/query")
-async def export_query_post(payload: ExportRequest) -> Response:
+async def export_query_post(
+    payload: ExportRequest,
+    context: SecurityContext = Depends(get_security_context),  # noqa: B008
+) -> Response:
     """Stream export query results via HTTP POST."""
-    return await build_export_response(payload.sql, payload.format, payload.limit, payload.filename)
+    return await build_export_response(
+        payload.sql, payload.format, payload.limit, payload.filename, security_context=context
+    )

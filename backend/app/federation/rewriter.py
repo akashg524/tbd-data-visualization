@@ -103,9 +103,33 @@ class ASTRewriter:
 
             table_qualifier = table_node.alias or table_node.name
 
+            # Check table column metadata if catalog is available to avoid filtering non-existent columns
+            table_columns: set[str] | None = None
+            if catalog is not None:
+                cached_table = catalog._table_cache.get(table_path)
+                if not cached_table:
+                    try:
+                        resolved = catalog.resolve_table(table_path)
+                        if resolved:
+                            full_key = f"{resolved.catalog_name}.{resolved.schema_name}.{resolved.table_name}"
+                            cached_table = catalog._table_cache.get(full_key)
+                    except Exception as exc:
+                        logger.debug("catalog_table_resolution_failed", table=table_path, error=str(exc))
+                if cached_table and cached_table.columns:
+                    table_columns = {c.name.lower() for c in cached_table.columns}
+
+            applicable_rules = [
+                r
+                for r in policy.acl_rules
+                if table_columns is None or r.target_column.lower() in table_columns
+            ]
+
+            if not applicable_rules:
+                continue
+
             # Check if user has any claims matching this policy's ACL rules
             has_any_claim = any(
-                bool(context.get_effective_claims(r.claim_field)) for r in policy.acl_rules
+                bool(context.get_effective_claims(r.claim_field)) for r in applicable_rules
             )
 
             if not has_any_claim:
@@ -115,7 +139,7 @@ class ASTRewriter:
                     applied_rules.append(f"{table_qualifier} -> FAIL_CLOSED (1 = 0)")
                 continue
 
-            for rule in policy.acl_rules:
+            for rule in applicable_rules:
                 raw_values = context.get_effective_claims(rule.claim_field)
                 if not raw_values:
                     continue

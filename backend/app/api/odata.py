@@ -12,11 +12,15 @@ from pydantic import BaseModel, Field
 
 from app.api.query import federated_executor
 from app.api.views import IDENTIFIER_REGEX, resolve_view_path
-from app.auth import require_roles
+from app.auth import SecurityContext, get_security_context, require_roles
 from app.catalog import catalog as default_catalog
 from app.connectors.models import ColumnMetadata, DataType
 
-router = APIRouter(dependencies=[Depends(require_roles("FinancialAnalyst", "DataEngineer"))])
+router = APIRouter(
+    dependencies=[
+        Depends(require_roles("FinancialAnalyst", "DataEngineer", "Trader", "ComplianceAdmin"))
+    ]
+)
 
 EDM_TYPE_MAP = {
     DataType.STRING: "Edm.String",
@@ -229,6 +233,7 @@ async def query_entity_set(
     top: int = Query(100, alias="$top", ge=1, le=10000, description="Max rows to return"),
     skip: int = Query(0, alias="$skip", ge=0, description="Rows to skip"),
     count: bool = Query(False, alias="$count", description="Include row count annotation"),
+    context: SecurityContext = Depends(get_security_context),  # noqa: B008
 ) -> JSONResponse:
     """Serve OData v4 entity set queries with $filter, $select, $top, $skip, and $orderby."""
     if not IDENTIFIER_REGEX.match(schema) or not IDENTIFIER_REGEX.match(table):
@@ -279,7 +284,11 @@ async def query_entity_set(
     sql = f"SELECT {select_clause} FROM {full_path}{where_sql}{order_sql} LIMIT {top}{offset_sql}"  # noqa: S608
 
     try:
-        arrow_table, _metrics = await federated_executor.execute(sql)
+        arrow_table, _metrics = await federated_executor.execute(
+            sql, security_context=context, protocol="OData"
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=400, detail=f"OData query execution failed: {exc}") from exc
 

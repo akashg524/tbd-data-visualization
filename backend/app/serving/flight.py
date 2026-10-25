@@ -10,6 +10,7 @@ import pyarrow as pa
 import pyarrow.flight as fl
 import structlog
 
+from app.auth.governance import SecurityContext
 from app.catalog import UnifiedCatalogRegistry
 from app.catalog import catalog as default_catalog
 from app.connectors.models import DataType
@@ -125,9 +126,23 @@ class FederatedFlightServer(fl.FlightServerBase):
         if not sql:
             raise fl.FlightServerError("Empty query string received in ticket.")
 
+        sec_context = getattr(context, "security_context", None)
+        if sec_context is None:
+            sec_context = SecurityContext(
+                user_id="flight_analyst",
+                username="flight_analyst@contoso.com",
+                roles=["FinancialAnalyst"],
+                trading_desks=["FX", "EQUITIES"],
+                regions=["US", "EMEA"],
+                allowed_accounts=["ACC-001", "ACC-002"],
+            )
+
         logger.info("flight_executing_query", sql=sql)
         try:
-            arrow_table, _metrics = run_async(self.executor.execute(sql), self.loop)
+            arrow_table, _metrics = run_async(
+                self.executor.execute(sql, security_context=sec_context, protocol="Flight"),
+                self.loop,
+            )
             return fl.RecordBatchStream(arrow_table)
         except Exception as exc:
             logger.error("flight_query_execution_failed", sql=sql, error=str(exc))
