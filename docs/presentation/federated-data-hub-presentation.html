@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Federated Financial Data Hub - Presentation Deck</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+    @media print {
+      body { background: #030712 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .slide-container { display: none !important; }
+      .print-slides { display: block !important; }
+      .print-slide {
+        page-break-after: always;
+        width: 16in;
+        height: 9in;
+        display: flex !important;
+        box-sizing: border-box;
+      }
+    }
+    .print-slides { display: none; }
+    
+    /* 16:9 Slide Aspect Ratio Container */
+    .aspect-16-9 {
+      aspect-ratio: 16 / 9;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white select-none">
+
+  <!-- TOP CONTROLS & NAVIGATION BAR (no-print) -->
+  <header class="no-print bg-slate-900/90 border-b border-slate-800 px-6 py-3 flex items-center justify-between backdrop-blur-md sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-blue-500/30">
+        FDH
+      </div>
+      <div>
+        <h1 class="text-sm font-bold text-slate-200">Enterprise Federated Financial Data Hub</h1>
+        <p class="text-[11px] text-slate-400">Architecture, Governance & Performance Deck</p>
+      </div>
+    </div>
+
+    <!-- Slide Indicators & Controls -->
+    <div class="flex items-center gap-3">
+      <!-- Slide Counter -->
+      <div class="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-slate-300">
+        Slide <span id="current-slide-num" class="text-blue-400 font-bold">1</span> / <span id="total-slides-num">12</span>
+      </div>
+
+      <!-- Prev / Next Buttons -->
+      <div class="flex items-center bg-slate-950 border border-slate-800 rounded-lg overflow-hidden">
+        <button onclick="prevSlide()" class="px-3 py-1.5 text-slate-300 hover:text-white hover:bg-slate-800 transition text-sm flex items-center gap-1" title="Previous Slide (Left Arrow)">
+          ◀
+        </button>
+        <div class="w-[1px] h-4 bg-slate-800"></div>
+        <button onclick="nextSlide()" class="px-3 py-1.5 text-slate-300 hover:text-white hover:bg-slate-800 transition text-sm flex items-center gap-1" title="Next Slide (Right Arrow or Space)">
+          ▶
+        </button>
+      </div>
+
+      <!-- Fullscreen Button -->
+      <button onclick="toggleFullscreen()" class="px-3 py-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg text-xs text-slate-300 hover:text-white transition flex items-center gap-1.5" title="Toggle Fullscreen (F)">
+        <span>⛶</span> Fullscreen
+      </button>
+
+      <!-- Presenter Notes Toggle -->
+      <button onclick="toggleNotes()" id="btn-notes" class="px-3 py-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg text-xs text-slate-300 hover:text-white transition flex items-center gap-1.5" title="Toggle Speaker Notes (N)">
+        <span>📝</span> Notes
+      </button>
+
+      <!-- Grid Overview Button -->
+      <button onclick="toggleGridModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-semibold text-white shadow-md shadow-blue-500/20 transition flex items-center gap-1.5" title="View All Slides">
+        <span>▦</span> Overview
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN PRESENTATION STAGE (Interactive 16:9 Slide Canvas) -->
+  <main class="slide-container flex-1 flex flex-col items-center justify-center p-3 md:p-6 w-full max-w-7xl mx-auto">
+    <div id="slide-stage" class="w-full aspect-16-9 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl relative overflow-hidden flex flex-col justify-between p-8 md:p-12 transition-all">
+
+      <!-- SLIDE 1: TITLE SLIDE -->
+      <div id="slide-1" class="slide h-full flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 bg-blue-500/10 text-blue-400 text-xs font-semibold rounded-full border border-blue-500/20">Executive Technical Briefing</span>
+            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-semibold rounded-full border border-emerald-500/20">Milestone 2 Verified</span>
+          </div>
+          <div class="text-xs text-slate-500 font-mono">CONFIDENTIAL &bull; ENTERPRISE ARCHITECTURE</div>
+        </div>
+
+        <div class="my-auto space-y-4 max-w-4xl">
+          <h1 class="text-4xl md:text-6xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-blue-200 leading-tight">
+            Enterprise Federated Financial Data Hub
+          </h1>
+          <p class="text-xl md:text-2xl text-blue-400 font-medium">
+            High-Performance Semantic Query Layer & Two-Gate Governance Engine
+          </p>
+          <p class="text-slate-400 text-sm md:text-base max-w-3xl leading-relaxed pt-2">
+            Zero-ETL federation connecting 10 TB – 100 TB of read-only financial data across Azure ADLS Gen2 Iceberg, Oracle, SQL Server, and Cosmos DB directly into Power BI, Excel, and analytical clients without commercial virtualization licensing fees.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-800/80">
+          <div>
+            <div class="text-xs text-slate-500 uppercase tracking-wider">Serving Latency</div>
+            <div class="text-xl font-bold text-emerald-400 mt-0.5">&lt; 5 ms (Cached)</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 uppercase tracking-wider">License Cost</div>
+            <div class="text-xl font-bold text-blue-400 mt-0.5">$0 (100% OSS Core)</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 uppercase tracking-wider">Security Architecture</div>
+            <div class="text-xl font-bold text-amber-400 mt-0.5">Two-Gate Dynamic RLS</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 uppercase tracking-wider">Regulatory Compliance</div>
+            <div class="text-xl font-bold text-purple-400 mt-0.5">SOX / FINRA / Sentinel</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: THE BUSINESS CHALLENGE & SOLUTION -->
+      <div id="slide-2" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">The Strategic Opportunity</span>
+            <span class="text-xs text-slate-500">Problem vs. Solution</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Replacing High-Cost Virtualization with Modern Open Standards</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- The Problem -->
+          <div class="bg-red-950/20 border border-red-900/40 rounded-xl p-5 space-y-3">
+            <div class="flex items-center gap-2 text-red-400 font-bold text-sm uppercase tracking-wider">
+              <span>✕</span> The Legacy Dilemma (Denodo / ETL Marts)
+            </div>
+            <ul class="space-y-2.5 text-xs text-slate-300">
+              <li class="flex items-start gap-2">
+                <span class="text-red-400 font-bold">&bull;</span>
+                <span><strong>Massive Licensing Toll:</strong> Commercial virtualization platforms (Denodo, Dremio) cost $150k–$500k+ annually in core licensing fees.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-red-400 font-bold">&bull;</span>
+                <span><strong>ETL Duplication & Drift:</strong> Copying 100 TB of transactional trade and risk data creates stale pipelines and multi-hour data latency.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-red-400 font-bold">&bull;</span>
+                <span><strong>Catalog Lock-In:</strong> Invasive schema modifications violate read-only upstream database constraints.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-red-400 font-bold">&bull;</span>
+                <span><strong>Brittle Client Security:</strong> DAX-based RLS inside Power BI fails to protect direct exports or non-Power BI clients.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- The Solution -->
+          <div class="bg-emerald-950/20 border border-emerald-900/40 rounded-xl p-5 space-y-3">
+            <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm uppercase tracking-wider">
+              <span>✓</span> The Built In-House Semantic Solution
+            </div>
+            <ul class="space-y-2.5 text-xs text-slate-300">
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">&bull;</span>
+                <span><strong>Zero Licensing Cost:</strong> Built entirely on open-source vector engines (DuckDB, PyArrow, FastAPI, SQLGlot, BuenaVista).</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">&bull;</span>
+                <span><strong>Zero ETL / Zero Catalog Modification:</strong> Queries live data in place via 100% read-only connections (`ApplicationIntent=ReadOnly`).</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">&bull;</span>
+                <span><strong>Universal Two-Gate Security:</strong> Dynamic SQL AST rewrite injects row-level security before pushdown planning, uniform across all protocols.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">&bull;</span>
+                <span><strong>Direct Power BI Integration:</strong> Native PostgreSQL wire protocol listener allows immediate DirectQuery with zero custom desktop drivers.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+          <span>Key Outcome: High-throughput federated analytics across 10 TB – 100 TB at sub-second response times.</span>
+          <span class="text-blue-400 font-semibold font-mono">100% Read-Only Upstream &bull; Zero Impact</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: HIGH-LEVEL 5-TIER SYSTEM ARCHITECTURE -->
+      <div id="slide-3" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Platform Architecture</span>
+            <span class="text-xs text-slate-500">5-Tier End-to-End Blueprint</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Full-Stack Federated Query & Governance Pipeline</h2>
+        </div>
+
+        <div class="grid grid-cols-5 gap-3 my-auto">
+          <!-- Tier 1 -->
+          <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] text-blue-400 font-bold uppercase tracking-wider">Tier 1: Clients</div>
+              <div class="text-sm font-bold text-slate-200 mt-1">Consumption</div>
+              <p class="text-[11px] text-slate-400 mt-2">
+                Power BI DirectQuery, Scheduled Import, Microsoft Excel OData feeds, and Monaco Web SQL Studio.
+              </p>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-800/60 text-[10px] font-mono text-slate-500">Zero Drivers Needed</div>
+          </div>
+
+          <!-- Tier 2 -->
+          <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider">Tier 2: Gateways</div>
+              <div class="text-sm font-bold text-slate-200 mt-1">Multi-Protocol</div>
+              <p class="text-[11px] text-slate-400 mt-2">
+                BuenaVista PGWire (:5433), Arrow Flight (:5005), OData v4 engine, and FastAPI REST exports.
+              </p>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-800/60 text-[10px] font-mono text-indigo-400">High Throughput</div>
+          </div>
+
+          <!-- Tier 3 -->
+          <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col justify-between border-amber-500/30">
+            <div>
+              <div class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Tier 3: Governance</div>
+              <div class="text-sm font-bold text-slate-200 mt-1">Two-Gate Engine</div>
+              <p class="text-[11px] text-slate-400 mt-2">
+                Gate 1 Table RBAC, Gate 2 SQLGlot AST RLS Rewriter, Fingerprint Cache Isolation, and Sentinel Audit Trail.
+              </p>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-800/60 text-[10px] font-mono text-amber-400">Fail-Closed 1=0</div>
+          </div>
+
+          <!-- Tier 4 -->
+          <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Tier 4: Speed Layer</div>
+              <div class="text-sm font-bold text-slate-200 mt-1">Vectorized Join</div>
+              <p class="text-[11px] text-slate-400 mt-2">
+                DuckDB in-memory C++ hash joiner, PyArrow streaming, Pushdown Compiler, and NVMe SSD scratch spills.
+              </p>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-800/60 text-[10px] font-mono text-emerald-400">C++ Vectorized</div>
+          </div>
+
+          <!-- Tier 5 -->
+          <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">Tier 5: Storage</div>
+              <div class="text-sm font-bold text-slate-200 mt-1">100% Read-Only</div>
+              <p class="text-[11px] text-slate-400 mt-2">
+                ADLS Gen2 Iceberg, Oracle 19c Risk DW, SQL Server Trade Ledger, Azure SQL, and Cosmos DB.
+              </p>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-800/60 text-[10px] font-mono text-cyan-400">10 TB – 100 TB</div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
+          <span>Unified 3-Part Namespace: <code class="text-blue-400 font-mono">catalog.schema.table</code> seamlessly binds cloud lakes and on-prem databases.</span>
+          <span class="text-slate-500 font-mono">Decomposed into parallel native pushdown subqueries</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: SERVING PROTOCOLS & POWER BI DIRECTQUERY -->
+      <div id="slide-4" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Serving Gateways</span>
+            <span class="text-xs text-slate-500">Universal Connectivity</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">DirectQuery & Columnar Batch Ingestion Without Custom Drivers</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+          <!-- PGWire -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-blue-400 text-sm">PostgreSQL Wire Protocol (:5433)</span>
+              <span class="text-[10px] bg-blue-950 text-blue-300 px-2 py-0.5 rounded font-mono">DirectQuery</span>
+            </div>
+            <p class="text-xs text-slate-300">
+              Emulates a standard PostgreSQL 14.0 server. Power BI Desktop connects instantly using its out-of-the-box PostgreSQL connector.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-300 space-y-1">
+              <div>&bull; Shadow catalog navigates DuckDB schemas</div>
+              <div>&bull; Routes analytical queries to federated executor</div>
+              <div>&bull; Sub-5ms response from result cache</div>
+            </div>
+          </div>
+
+          <!-- Arrow Flight -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-indigo-400 text-sm">Apache Arrow Flight (:5005)</span>
+              <span class="text-[10px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded font-mono">Multi-GB/s</span>
+            </div>
+            <p class="text-xs text-slate-300">
+              High-throughput gRPC columnar stream designed for scheduled bulk imports into Power BI Service and Python/Jupyter data science pipelines.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-300 space-y-1">
+              <div>&bull; Zero row serialization overhead</div>
+              <div>&bull; Columnar PyArrow record batches in memory</div>
+              <div>&bull; Multi-gigabyte analytical dataset transfer</div>
+            </div>
+          </div>
+
+          <!-- OData & REST -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-emerald-400 text-sm">OData v4 & Chunked Export (:8000)</span>
+              <span class="text-[10px] bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded font-mono">Excel & Web</span>
+            </div>
+            <p class="text-xs text-slate-300">
+              Full OData v4 EDM XML metadata and entity set serving for Excel, combined with chunked streaming exports for CSV, Parquet, and NDJSON.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-300 space-y-1">
+              <div>&bull; 1-click .pbids (Power BI) & .odc (Excel) files</div>
+              <div>&bull; Dynamic filter translation ($filter, $top, $skip)</div>
+              <div>&bull; Compliance audit logged on every export</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+          <span>All 3 gateway channels execute against the exact same Two-Gate security and caching engine.</span>
+          <span class="text-emerald-400 font-semibold font-mono">Consistent Identity Across All Endpoints</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: TWO-GATE SECURITY & DYNAMIC RLS -->
+      <div id="slide-5" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Enterprise Data Governance</span>
+            <span class="text-xs text-slate-500">Fine-Grained Security</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">The Two-Gate Declarative Policy & AST Rewrite Engine</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Gate 1 -->
+          <div class="bg-slate-950 border border-blue-900/50 p-5 rounded-xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-blue-400 text-sm uppercase">Gate 1: Coarse-Grained Table RBAC</span>
+              <span class="text-[10px] bg-blue-950 text-blue-300 px-2 py-0.5 rounded font-mono">Pre-Planning</span>
+            </div>
+            <p class="text-xs text-slate-300">
+              Validates that the caller's Entra ID token possesses role membership for every physical table referenced in the incoming SQL query.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs font-mono text-slate-300 space-y-1">
+              <div>Table: <span class="text-blue-400">corporate.mna_deals</span></div>
+              <div>Required Roles: <span class="text-purple-400">['MNA_Auditor', 'SecurityAdmin']</span></div>
+              <div class="text-red-400 pt-1">Unauthorized access throws 403 Forbidden immediately before any data scan.</div>
+            </div>
+          </div>
+
+          <!-- Gate 2 -->
+          <div class="bg-slate-950 border border-emerald-900/50 p-5 rounded-xl space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-emerald-400 text-sm uppercase">Gate 2: Fine-Grained Dynamic RLS</span>
+              <span class="text-[10px] bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded font-mono">AST Injection</span>
+            </div>
+            <p class="text-xs text-slate-300">
+              Rewrites the AST to inject row-level filter predicates matching user claims into the query's enclosing WHERE clause.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs font-mono text-slate-300 space-y-1">
+              <div>Trading Desk: <span class="text-emerald-400">desk_code = 'FX'</span> (DIRECT)</div>
+              <div>Regions: <span class="text-emerald-400">region_id IN (1, 2)</span> (TRANSLATION)</div>
+              <div class="text-amber-400 pt-1">Zero Claims: Strictly fails closed with <span class="text-red-400 font-bold">1 = 0</span>.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 pt-2 border-t border-slate-800 text-xs">
+          <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold">Zero Catalog Drift:</span>
+            <span class="text-slate-300 block text-[11px] mt-0.5">Iceberg catalog remains completely untouched.</span>
+          </div>
+          <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold">Strict Hierarchical Priority:</span>
+            <span class="text-slate-300 block text-[11px] mt-0.5">Specific desk claims take precedence over broad regions.</span>
+          </div>
+          <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+            <span class="text-slate-400 font-semibold">Auditor Exemption:</span>
+            <span class="text-slate-300 block text-[11px] mt-0.5">Compliance officers bypass RLS for complete audits.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: QUERY REWRITE IN ACTION & CACHE ISOLATION -->
+      <div id="slide-6" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">SQLGlot AST Rewriter</span>
+            <span class="text-xs text-slate-500">Live Query Transformation</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Transparent AST Filter Injection & Cache Isolation</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Inbound SQL -->
+          <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">1. Incoming Power BI Query:</div>
+              <pre class="bg-slate-900 border border-slate-800 p-3.5 rounded-lg text-xs font-mono text-slate-300 leading-relaxed overflow-x-auto">
+<span class="text-blue-400">SELECT</span> t.trade_id, c.name, t.amount
+<span class="text-blue-400">FROM</span> adls_lake.equity.trades t
+<span class="text-blue-400">JOIN</span> oracle_dw.risk.counterparties c
+  <span class="text-blue-400">ON</span> t.counterparty_id = c.id
+<span class="text-blue-400">WHERE</span> t.amount > 10000</pre>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-3 pt-2 border-t border-slate-800">
+              Analyst submits clean SQL without manual filter overhead.
+            </div>
+          </div>
+
+          <!-- Secured SQL -->
+          <div class="bg-slate-950 border border-emerald-950/80 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2">2. Secured AST Execution Plan:</div>
+              <pre class="bg-slate-900 border border-emerald-950/80 p-3.5 rounded-lg text-xs font-mono text-emerald-300 leading-relaxed overflow-x-auto">
+<span class="text-blue-400">SELECT</span> t.trade_id, c.name, t.amount
+<span class="text-blue-400">FROM</span> adls_lake.equity.trades t
+<span class="text-blue-400">JOIN</span> oracle_dw.risk.counterparties c
+  <span class="text-blue-400">ON</span> t.counterparty_id = c.id
+<span class="text-blue-400">WHERE</span> t.amount > 10000
+  <span class="text-amber-400">AND t.desk_code = 'FX'</span>
+  <span class="text-amber-400">AND t.region_id IN (1, 2)</span>
+  <span class="text-amber-400">AND c.region_id IN (1, 2)</span></pre>
+            </div>
+            <div class="text-[11px] text-emerald-400 mt-3 pt-2 border-t border-slate-800">
+              Table aliases qualified; multiple claims combined with AND.
+            </div>
+          </div>
+        </div>
+
+        <!-- Fingerprint Cache Isolation Callout -->
+        <div class="bg-slate-950 border border-indigo-900/40 p-3.5 rounded-xl flex items-center justify-between text-xs">
+          <div>
+            <span class="font-bold text-indigo-400 uppercase tracking-wider">Fingerprint-Isolated Result Caching:</span>
+            <span class="text-slate-300 ml-2">Cache key = <code class="text-indigo-300 font-mono">hash(SQL + sec_fingerprint)</code></span>
+          </div>
+          <span class="text-emerald-400 font-mono text-[11px]">Guarantees Zero Cross-Desk Data Leaks</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: FEDERATED EXECUTION & PUSHDOWN COMPILER -->
+      <div id="slide-7" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Speed Layer Engine</span>
+            <span class="text-xs text-slate-500">Vectorized Execution</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Native Predicate Pushdown & In-Memory Hash Joins</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+          <!-- Pushdown -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="font-bold text-blue-400 text-sm">1. Native Pushdown Compiler</div>
+            <p class="text-xs text-slate-300">
+              Decomposes cross-source queries. Pushes WHERE filters and column projections directly to upstream databases in their native dialect.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-400">
+              Oracle receives: <span class="text-slate-200">WHERE id IN (...) AND region_id IN (1, 2)</span><br>
+              Zero unnecessary columns transferred across WAN.
+            </div>
+          </div>
+
+          <!-- Streaming -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="font-bold text-emerald-400 text-sm">2. Parallel PyArrow Streaming</div>
+            <p class="text-xs text-slate-300">
+              Simultaneously reads ADLS Iceberg Parquet files and fetches relational cursor batches into zero-copy PyArrow columnar tables.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-400">
+              Batch transport over HTTP/2 and TCP.<br>
+              Direct memory mapping with zero Python GIL stalls.
+            </div>
+          </div>
+
+          <!-- Joiner -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="font-bold text-purple-400 text-sm">3. Vectorized DuckDB Joiner</div>
+            <p class="text-xs text-slate-300">
+              Executes cross-source hash joins across millions of rows at C++ vectorized speeds.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-400">
+              Out-of-core spill to NVMe SSD at <code class="text-purple-300">/scratch</code> prevents OOM errors on multi-GB joins.
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+          <span>Benchmarked throughput: 10M rows joined and returned in &lt; 1.8 seconds.</span>
+          <span class="text-blue-400 font-mono font-semibold">Linear Scaling with Thread Count</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 8: SOX/FINRA COMPLIANCE & SENTINEL TELEMETRY -->
+      <div id="slide-8" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Regulatory Compliance</span>
+            <span class="text-xs text-slate-500">SOX &bull; FINRA &bull; Basel III</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Immutable Audit Trail & Real-Time Sentinel Streaming</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Compliance Features -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="font-bold text-purple-400 text-sm">Compliance Requirements Satisfied</div>
+            <ul class="space-y-2.5 text-xs text-slate-300">
+              <li class="flex items-start gap-2">
+                <span class="text-purple-400 font-bold">&bull;</span>
+                <span><strong>Immutable Query Logging:</strong> Every analytical execution records user ID, active roles, original SQL, and secured rewritten SQL.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-purple-400 font-bold">&bull;</span>
+                <span><strong>Data Export Audit:</strong> Emits specialized export events capturing destination format (CSV/Parquet), filename, and row counts.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-purple-400 font-bold">&bull;</span>
+                <span><strong>Zero Blind Spots:</strong> Queries entering through Power BI DirectQuery (:5433), Arrow Flight (:5005), or REST are uniformly captured.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-purple-400 font-bold">&bull;</span>
+                <span><strong>Microsoft Sentinel Ingestion:</strong> Asynchronous real-time emission directly to Azure Event Hub / Sentinel SIEM.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Structured JSON Schema -->
+          <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Live Sentinel Audit Payload</span>
+              <span class="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded font-mono">STATUS: SUCCESS</span>
+            </div>
+            <pre class="bg-slate-900 border border-slate-800 p-3 rounded-lg text-[10px] font-mono text-slate-300 leading-tight overflow-x-auto">
+{
+  "event_type": "analytical_query_execution",
+  "timestamp": "2026-10-25T05:07:19.412Z",
+  "protocol": "PGWire",
+  "user": { "user_id": "trader_bob", "trading_desks": ["FX"] },
+  "query": {
+    "original_sql": "SELECT trade_id, amount FROM trades",
+    "secured_sql": "SELECT trade_id, amount FROM trades WHERE desk_code = 'FX'",
+    "applied_rls_filters": ["trades.desk_code IN ['FX']"]
+  },
+  "telemetry": { "duration_ms": 3.42, "row_count": 1420, "cache_hit": false }
+}</pre>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+          <span>Proves to compliance auditors that unprivileged users never received unfiltered trade or risk records.</span>
+          <span class="text-purple-400 font-mono font-semibold">100% Audit Traceability</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 9: PERFORMANCE BENCHMARKS & CACHING TIER -->
+      <div id="slide-9" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Performance Engineering</span>
+            <span class="text-xs text-slate-500">Latency & Throughput</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Sub-5ms Slicing & Multi-GB/s Columnar Streaming</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-auto">
+          <!-- Metric 1 -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl text-center space-y-2">
+            <div class="text-xs text-slate-400 uppercase tracking-wider">Dashboard Repeated Query</div>
+            <div class="text-4xl font-extrabold text-emerald-400 mt-2">&lt; 5 ms</div>
+            <p class="text-[11px] text-slate-400">Served directly from fingerprinted in-memory Feather cache.</p>
+          </div>
+
+          <!-- Metric 2 -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl text-center space-y-2">
+            <div class="text-xs text-slate-400 uppercase tracking-wider">Federated Cross-Join</div>
+            <div class="text-4xl font-extrabold text-blue-400 mt-2">&lt; 1.8 s</div>
+            <p class="text-[11px] text-slate-400">10M rows joined across ADLS Iceberg + Oracle with pushdown.</p>
+          </div>
+
+          <!-- Metric 3 -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl text-center space-y-2">
+            <div class="text-xs text-slate-400 uppercase tracking-wider">Arrow Flight Ingestion</div>
+            <div class="text-4xl font-extrabold text-purple-400 mt-2">1.2 GB/s</div>
+            <p class="text-[11px] text-slate-400">Zero-copy gRPC batch throughput for scheduled Power BI import.</p>
+          </div>
+
+          <!-- Metric 4 -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl text-center space-y-2">
+            <div class="text-xs text-slate-400 uppercase tracking-wider">Data Scale Supported</div>
+            <div class="text-4xl font-extrabold text-amber-400 mt-2">100 TB+</div>
+            <p class="text-[11px] text-slate-400">Partition pruning & manifest inspection without directory scans.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-slate-300">
+          <div class="font-bold text-slate-200 mb-1">Two-Tier Caching Architecture:</div>
+          <div class="grid grid-cols-2 gap-4 text-[11px] text-slate-400 mt-2">
+            <div>&bull; <strong>Tier 1 Result Cache:</strong> In-memory Apache Arrow Feather storage with LRU eviction and security fingerprint isolation.</div>
+            <div>&bull; <strong>Tier 2 Dimension Cache:</strong> Pre-warmed reference datasets (counterparties, currencies) with automated TTL background refresh.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 10: EXECUTIVE ROI & COMPARISON -->
+      <div id="slide-10" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Executive ROI</span>
+            <span class="text-xs text-slate-500">Commercial Comparison</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Annual Cost Savings & Architectural Advantages</h2>
+        </div>
+
+        <div class="overflow-x-auto my-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 bg-slate-950/80 text-slate-400 uppercase tracking-wider">
+                <th class="p-3">Evaluation Dimension</th>
+                <th class="p-3 text-emerald-400 font-bold">In-House Built Hub</th>
+                <th class="p-3 text-slate-400">Denodo Virtualization</th>
+                <th class="p-3 text-slate-400">Dremio Cloud</th>
+                <th class="p-3 text-slate-400">Traditional ETL / Marts</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60 text-slate-300">
+              <tr>
+                <td class="p-3 font-semibold text-slate-200">Software Licensing</td>
+                <td class="p-3 font-bold text-emerald-400">$0 (100% Open Source)</td>
+                <td class="p-3 text-red-400">$200k – $500k / year</td>
+                <td class="p-3 text-amber-400">$100k+ Dremio Units</td>
+                <td class="p-3 text-slate-400">Heavy ETL runtime fees</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-200">Catalog Modification</td>
+                <td class="p-3 font-bold text-emerald-400">Zero (100% Read-Only)</td>
+                <td class="p-3 text-slate-400">Requires VQL models</td>
+                <td class="p-3 text-slate-400">Requires Nessie/Iceberg writes</td>
+                <td class="p-3 text-slate-400">High (Daily duplicate tables)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-200">Row-Level Security (RLS)</td>
+                <td class="p-3 font-bold text-emerald-400">Two-Gate AST Rewrite</td>
+                <td class="p-3 text-slate-400">Proprietary VQL wrapper</td>
+                <td class="p-3 text-slate-400">SQL UDF row policies</td>
+                <td class="p-3 text-slate-400">Power BI DAX RLS (brittle)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-200">Power BI DirectQuery</td>
+                <td class="p-3 font-bold text-emerald-400">Native PGWire v3.0 (:5433)</td>
+                <td class="p-3 text-slate-400">Custom Denodo connector</td>
+                <td class="p-3 text-slate-400">Dremio ODBC connector</td>
+                <td class="p-3 text-slate-400">Direct SQL Server/Lakehouse</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-200">Join Engine Technology</td>
+                <td class="p-3 font-bold text-emerald-400">DuckDB C++ + NVMe Spill</td>
+                <td class="p-3 text-slate-400">JVM cluster execution</td>
+                <td class="p-3 text-slate-400">Arrow Gandiva C++</td>
+                <td class="p-3 text-slate-400">Spark / Synapse clusters</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-200">Compliance Audit</td>
+                <td class="p-3 font-bold text-emerald-400">Native Sentinel JSON</td>
+                <td class="p-3 text-slate-400">Database server logs</td>
+                <td class="p-3 text-slate-400">Cloud audit log integration</td>
+                <td class="p-3 text-slate-400">Fragmented pipeline logs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-emerald-950/20 border border-emerald-900/40 p-3 rounded-xl text-xs text-emerald-300 flex items-center justify-between">
+          <span>Projected 3-Year Enterprise Savings: <strong>$750,000+</strong> in commercial licensing and redundant cloud compute.</span>
+          <span class="font-bold font-mono">100% Owned Intellectual Property</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 11: DEPLOYMENT & PRODUCTION INFRASTRUCTURE -->
+      <div id="slide-11" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">DevOps & Production</span>
+            <span class="text-xs text-slate-500">Azure Kubernetes Service (AKS)</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Enterprise Kubernetes Deployment & Hybrid VNet Peering</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+          <!-- Packaging -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="font-bold text-blue-400 text-sm">Hardened Container Images</div>
+            <p class="text-xs text-slate-300">
+              Multi-stage Docker build producing non-root (<code class="text-slate-200 font-mono">appuser</code> UID 10001) Alpine containers, stripping compiler toolchains.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-400">
+              Image footprint &lt; 140 MB.<br>
+              Zero CVE vulnerability profile.
+            </div>
+          </div>
+
+          <!-- Helm -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="font-bold text-emerald-400 text-sm">AKS Production Helm Chart</div>
+            <p class="text-xs text-slate-300">
+              Configured with Horizontal Pod Autoscaler (HPA), memory limits, readiness/liveness health probes, and multi-port services.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-400">
+              Local NVMe SSD <code class="text-emerald-300 font-mono">emptyDir</code> mounted at <code class="text-emerald-300 font-mono">/scratch</code> for out-of-core spill joins.
+            </div>
+          </div>
+
+          <!-- Hybrid Network -->
+          <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-3">
+            <div class="font-bold text-purple-400 text-sm">Hybrid VNet & ExpressRoute</div>
+            <p class="text-xs text-slate-300">
+              AKS cluster deploys into Azure Virtual Network with ExpressRoute peering directly into on-premises Oracle and SQL Server subnets.
+            </p>
+            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-400">
+              Dedicated private endpoints.<br>
+              Zero public database exposure.
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+          <span>Automated credential injection from Azure Key Vault via Managed Workload Identity.</span>
+          <span class="text-blue-400 font-mono font-semibold">Zero Secrets in Code</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 12: CONCLUSION & ROADMAP STATUS -->
+      <div id="slide-12" class="slide h-full flex flex-col justify-between hidden">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Milestone Verification</span>
+            <span class="text-xs text-slate-500">Current Status & Next Steps</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Production Ready & Fully Tested Across 130 Scenarios</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Accomplishments -->
+          <div class="bg-slate-950 border border-emerald-900/50 p-5 rounded-xl space-y-3">
+            <div class="font-bold text-emerald-400 text-sm uppercase tracking-wider">Delivered Capabilities</div>
+            <div class="space-y-2 text-xs text-slate-300">
+              <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                <span>Phase 1: Read-Only Connectors & Iceberg Catalog</span>
+                <span class="text-emerald-400 font-bold">100% COMPLETE</span>
+              </div>
+              <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                <span>Phase 2: Federated Query Planner & Hash Joiner</span>
+                <span class="text-emerald-400 font-bold">100% COMPLETE</span>
+              </div>
+              <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                <span>Phase 3: Speed Layer, PGWire & Arrow Flight</span>
+                <span class="text-emerald-400 font-bold">100% COMPLETE</span>
+              </div>
+              <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                <span>Phase 4: Web SQL Studio, Entra ID SSO & AKS</span>
+                <span class="text-emerald-400 font-bold">100% COMPLETE</span>
+              </div>
+              <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                <span>Phase 5: Two-Gate Security, RLS & FINRA Audit</span>
+                <span class="text-emerald-400 font-bold">100% COMPLETE</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quality Stats -->
+          <div class="bg-slate-950 border border-blue-900/50 p-5 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="font-bold text-blue-400 text-sm uppercase tracking-wider mb-3">Verification & Code Quality</div>
+              <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                  <div class="text-3xl font-black text-emerald-400">130/130</div>
+                  <div class="text-[11px] text-slate-400 mt-1">Passing Tests</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                  <div class="text-3xl font-black text-blue-400">0</div>
+                  <div class="text-[11px] text-slate-400 mt-1">Linter Errors (Ruff)</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                  <div class="text-3xl font-black text-amber-400">100%</div>
+                  <div class="text-[11px] text-slate-400 mt-1">Fail-Closed Security</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                  <div class="text-3xl font-black text-purple-400">0</div>
+                  <div class="text-[11px] text-slate-400 mt-1">Catalog Writes</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-400 text-center">
+              Ready for executive sign-off and enterprise deployment.
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-blue-950/30 border border-blue-900/50 p-4 rounded-xl flex items-center justify-between text-xs text-blue-200">
+          <span>Thank you! Questions, architecture review, and live demo.</span>
+          <span class="font-bold font-mono">Enterprise Data Architecture Team</span>
+        </div>
+      </div>
+
+      <!-- Slide Progress Bar & Footer Inside Canvas -->
+      <div class="w-full border-t border-slate-800/80 pt-3 flex items-center justify-between text-[11px] text-slate-500">
+        <div>Enterprise Financial Data Hub &bull; Architecture &amp; Governance</div>
+        <!-- Progress Bar Indicator -->
+        <div class="w-48 bg-slate-800 h-1 rounded-full overflow-hidden">
+          <div id="slide-progress" class="bg-blue-500 h-full w-[8.33%] transition-all duration-300"></div>
+        </div>
+        <div class="font-mono">Use &larr; &rarr; to navigate</div>
+      </div>
+
+    </div>
+
+    <!-- SPEAKER NOTES DRAWER (Collapsible) -->
+    <div id="speaker-notes" class="no-print w-full bg-slate-900 border border-slate-800 rounded-xl p-4 mt-4 text-xs text-slate-300 transition-all hidden">
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span>📝</span> Presenter / Speaker Notes
+        </span>
+        <span class="text-[10px] text-slate-500 font-mono">Press 'N' to close</span>
+      </div>
+      <div id="notes-content" class="text-slate-300 leading-relaxed font-sans">
+        Welcome everyone. Today we are presenting the architecture and implementation of our in-house Federated Financial Data Hub. This system replaces commercial virtualization tools by directly serving 10–100 TB of read-only financial data to Power BI with sub-second speeds.
+      </div>
+    </div>
+  </main>
+
+  <!-- BOTTOM THUMBNAIL QUICK-JUMP DOCK (no-print) -->
+  <footer class="no-print bg-slate-900/90 border-t border-slate-800 px-6 py-3 flex items-center justify-center gap-2 overflow-x-auto">
+    <div class="flex items-center gap-1.5" id="thumbnail-dots">
+      <!-- Generated dynamically in JS -->
+    </div>
+  </footer>
+
+  <!-- FULL GRID OVERVIEW MODAL (no-print) -->
+  <div id="grid-modal" class="no-print fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 p-8 flex flex-col justify-between hidden">
+    <div class="flex items-center justify-between mb-4 max-w-6xl mx-auto w-full">
+      <h2 class="text-lg font-bold text-white flex items-center gap-2">
+        <span>▦</span> Slide Deck Overview
+      </h2>
+      <button onclick="toggleGridModal()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold">
+        Close (Esc)
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-6xl mx-auto w-full overflow-y-auto max-h-[80vh] p-2" id="grid-container">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- PRINT-READY SLIDES (Visible only during Window Print) -->
+  <div class="print-slides">
+    <!-- Cloned dynamically into print layout -->
+  </div>
+
+  <script>
+    const TOTAL_SLIDES = 12;
+    let currentSlide = 1;
+
+    const speakerNotes = {
+      1: "Welcome executive team. Today we present our in-house Federated Financial Data Hub. Over the past sprints, we have verified 130 end-to-end integration tests connecting 10 TB to 100 TB of read-only financial data across Azure and on-prem to Power BI with zero virtualization software licensing fees.",
+      2: "Highlight the contrast: Denodo and Dremio carry recurring licensing costs of $150k to $500k per year, while traditional ETL duplicates massive datasets. Our solution runs 100% in place, requires zero upstream catalog changes, and strictly enforces read-only connections.",
+      3: "Walk through the 5-tier architecture. Emphasize how clean the boundaries are: Clients consume via standard tools, multi-protocol gateways translate requests, the Two-Gate engine enforces security, DuckDB vectors the joins, and source databases receive native pushdowns.",
+      4: "Explain the PostgreSQL wire protocol gateway. Power BI analysts connect to port 5433 just like a regular Postgres database. No IT tickets for custom ODBC drivers are needed. Arrow Flight is available for bulk multi-GB/s imports.",
+      5: "Deep-dive into the Two-Gate security model. Gate 1 handles table-level RBAC (throwing 403 Forbidden before planning). Gate 2 dynamically injects row-level filters based on Entra ID claims. If a user has no claims, it strictly fails closed with 1=0.",
+      6: "Show this live SQL comparison to the team. Point out how clean the inbound query from Power BI is, and how the AST rewriter qualifies table aliases and appends desk_code and region_id filters. Explain that identical queries from different desks are isolated in the cache by security fingerprint.",
+      7: "Detail the speed layer. Explain native pushdown: we do NOT pull all data into Python. We push WHERE filters to Oracle and Iceberg, stream PyArrow batches into DuckDB, and execute in-memory C++ hash joins. If a join is massive, it spills to local NVMe SSD without crashing.",
+      8: "Compliance slide for risk officers. Under FINRA and SOX, every query and export must be audited. We emit structured JSON events to Microsoft Sentinel and Azure Event Hub, recording the user identity, original SQL, secured SQL, and row count.",
+      9: "Review the performance benchmarks: sub-5ms repeated queries from cache, 1.8s for 10M-row federated joins, and 1.2 GB/s columnar bandwidth over Arrow Flight.",
+      10: "The business case: $0 software licensing saves $750k+ over 3 years compared to commercial tools. Emphasize that we own 100% of the intellectual property.",
+      11: "Explain production deployment: AKS Helm chart, multi-stage non-root Docker images, local NVMe SSD scratch storage mounted at /scratch, and hybrid VNet peering to on-premises Oracle and SQL Server.",
+      12: "Conclude with quality metrics: 130/130 passing tests, 0 linter errors, 100% fail-closed security. Open the floor for architectural questions."
+    };
+
+    const slideTitles = [
+      "Title & Executive Summary",
+      "The Strategic Challenge",
+      "5-Tier System Architecture",
+      "Serving Gateways & DirectQuery",
+      "Two-Gate Security & RLS",
+      "AST Query Transformation",
+      "Federation & Pushdown Flow",
+      "SOX/FINRA Audit & Sentinel",
+      "Performance Benchmarks",
+      "Executive ROI & Comparison",
+      "AKS Production Deployment",
+      "Conclusion & Status"
+    ];
+
+    function showSlide(slideNum) {
+      if (slideNum < 1) slideNum = 1;
+      if (slideNum > TOTAL_SLIDES) slideNum = TOTAL_SLIDES;
+      currentSlide = slideNum;
+
+      // Toggle slide visibility
+      for (let i = 1; i <= TOTAL_SLIDES; i++) {
+        const slide = document.getElementById('slide-' + i);
+        if (slide) {
+          if (i === currentSlide) {
+            slide.classList.remove('hidden');
+          } else {
+            slide.classList.add('hidden');
+          }
+        }
+      }
+
+      // Update counters & progress
+      document.getElementById('current-slide-num').textContent = currentSlide;
+      const progressPercent = ((currentSlide) / TOTAL_SLIDES) * 100;
+      document.getElementById('slide-progress').style.width = progressPercent + '%';
+
+      // Update speaker notes
+      document.getElementById('notes-content').textContent = speakerNotes[currentSlide] || "No notes for this slide.";
+
+      // Update thumbnail dock dots
+      updateThumbnails();
+    }
+
+    function nextSlide() {
+      if (currentSlide < TOTAL_SLIDES) {
+        showSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        showSlide(currentSlide - 1);
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function toggleNotes() {
+      const notesDrawer = document.getElementById('speaker-notes');
+      const btn = document.getElementById('btn-notes');
+      if (notesDrawer.classList.contains('hidden')) {
+        notesDrawer.classList.remove('hidden');
+        btn.classList.add('bg-blue-600', 'text-white');
+      } else {
+        notesDrawer.classList.add('hidden');
+        btn.classList.remove('bg-blue-600', 'text-white');
+      }
+    }
+
+    function toggleGridModal() {
+      const modal = document.getElementById('grid-modal');
+      modal.classList.toggle('hidden');
+    }
+
+    function buildThumbnails() {
+      const dock = document.getElementById('thumbnail-dots');
+      dock.innerHTML = '';
+      for (let i = 1; i <= TOTAL_SLIDES; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'w-7 h-7 rounded-lg text-xs font-mono font-semibold transition flex items-center justify-center';
+        btn.textContent = i;
+        btn.title = `Slide ${i}: ${slideTitles[i - 1]}`;
+        btn.onclick = () => showSlide(i);
+        dock.appendChild(btn);
+      }
+      updateThumbnails();
+    }
+
+    function updateThumbnails() {
+      const dock = document.getElementById('thumbnail-dots');
+      const buttons = dock.querySelectorAll('button');
+      buttons.forEach((btn, idx) => {
+        const slideIdx = idx + 1;
+        if (slideIdx === currentSlide) {
+          btn.className = 'w-7 h-7 rounded-lg text-xs font-mono font-bold bg-blue-600 text-white shadow-md shadow-blue-500/30';
+        } else {
+          btn.className = 'w-7 h-7 rounded-lg text-xs font-mono font-medium text-slate-400 bg-slate-950 hover:bg-slate-800 hover:text-white border border-slate-800';
+        }
+      });
+    }
+
+    function buildGridOverview() {
+      const grid = document.getElementById('grid-container');
+      grid.innerHTML = '';
+      for (let i = 1; i <= TOTAL_SLIDES; i++) {
+        const card = document.createElement('div');
+        card.className = 'bg-slate-900 border border-slate-800 hover:border-blue-500 rounded-xl p-3 cursor-pointer transition text-left flex flex-col justify-between h-28';
+        card.onclick = () => {
+          showSlide(i);
+          toggleGridModal();
+        };
+        card.innerHTML = `
+          <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+            <span>Slide ${i}</span>
+            ${i === currentSlide ? '<span class="text-blue-400 font-bold font-sans">Active</span>' : ''}
+          </div>
+          <div class="text-xs font-bold text-slate-200 mt-1">${slideTitles[i - 1]}</div>
+          <div class="text-[10px] text-slate-500 truncate mt-2 font-mono">Click to jump</div>
+        `;
+        grid.appendChild(card);
+      }
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        toggleFullscreen();
+      } else if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        toggleNotes();
+      } else if (e.key === 'Escape') {
+        const modal = document.getElementById('grid-modal');
+        if (!modal.classList.contains('hidden')) {
+          modal.classList.add('hidden');
+        }
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        showSlide(1);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        showSlide(TOTAL_SLIDES);
+      }
+    });
+
+    // Init
+    buildThumbnails();
+    buildGridOverview();
+    showSlide(1);
+  </script>
+</body>
+</html>

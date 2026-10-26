@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monaco Web SQL Studio - Live UI Preview</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.6); }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 antialiased font-sans h-screen w-screen flex flex-col overflow-hidden selection:bg-blue-600 selection:text-white">
+
+  <!-- 1. Top Navigation Bar -->
+  <header class="flex items-center justify-between px-4 py-2.5 bg-zinc-900 border-b border-zinc-800 z-20 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="h-8 w-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+        <span class="text-emerald-400 font-bold text-sm">✦</span>
+      </div>
+      <div>
+        <h1 class="text-sm font-bold tracking-tight text-white leading-tight">
+          Federated Financial Data Hub
+        </h1>
+        <p class="text-[10px] text-zinc-400 leading-tight">
+          Monaco Semantic Speed Layer &amp; Power BI Studio
+        </p>
+      </div>
+    </div>
+
+    <!-- System Status & Entra ID Security Badges -->
+    <div class="flex items-center gap-2.5">
+      <!-- API Health -->
+      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-950 border border-zinc-800 rounded-full text-[11px]">
+        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-zinc-400">API:</span>
+        <span class="font-semibold text-emerald-400">Online</span>
+      </div>
+
+      <!-- DuckDB Engine Health -->
+      <div class="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-950 border border-zinc-800 rounded-full text-[11px]">
+        <span class="h-2 w-2 rounded-full bg-sky-400"></span>
+        <span class="text-zinc-400">DuckDB:</span>
+        <span class="font-semibold text-sky-400">Vectorized Ready</span>
+      </div>
+
+      <!-- Entra ID User Identity & RLS Role Pill -->
+      <div class="flex items-center gap-2 px-3 py-1 bg-emerald-950/60 border border-emerald-800/80 rounded-full text-[11px] text-emerald-300">
+        <span class="text-emerald-400 text-xs">🛡️</span>
+        <span class="font-medium">Dev Analyst</span>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-900/90 text-emerald-200 font-mono font-bold">
+          FinancialAnalyst
+        </span>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-blue-900/90 text-blue-200 font-mono">
+          Desks: FX, EQ
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. Main Studio Grid: Sidebar + Cockpit Workspace -->
+  <div class="flex-1 flex min-h-0 overflow-hidden">
+
+    <!-- Left Sidebar: Schema Tree & Launchers -->
+    <aside class="w-64 lg:w-72 bg-zinc-900/90 border-r border-zinc-800 flex flex-col h-full flex-shrink-0">
+      
+      <!-- Catalog Header -->
+      <div class="p-3 border-b border-zinc-800 flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-zinc-300">
+          <span>📁</span> Unified Catalog
+        </div>
+        <span class="text-[10px] bg-zinc-800 text-zinc-400 px-1.5 py-0.5 rounded font-mono">5 Sources</span>
+      </div>
+
+      <!-- Hierarchical Tree -->
+      <div class="flex-1 overflow-y-auto p-2 space-y-1 text-xs">
+        
+        <!-- ADLS Iceberg Source -->
+        <div class="space-y-0.5">
+          <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-zinc-800/60 text-slate-200 font-semibold cursor-pointer">
+            <span class="text-[10px]">▼</span>
+            <span class="text-cyan-400 font-mono text-[11px]">adls_lake</span>
+            <span class="ml-auto text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-800/60 px-1 py-0.2 rounded uppercase">Iceberg</span>
+          </div>
+          <div class="pl-4 space-y-0.5 border-l border-zinc-800 ml-3 mt-1">
+            <div class="text-zinc-400 text-[11px] font-mono px-2 py-0.5">equity</div>
+            <div class="pl-3 space-y-0.5">
+              <div class="flex items-center justify-between px-2 py-1 rounded bg-blue-600/20 text-blue-300 border border-blue-500/30 cursor-pointer font-mono text-[11px]">
+                <span>📄 trades</span>
+                <span class="text-[9px] text-amber-400 font-sans">RLS Gated</span>
+              </div>
+              <div class="flex items-center justify-between px-2 py-1 rounded hover:bg-zinc-800 text-zinc-400 cursor-pointer font-mono text-[11px]">
+                <span>📄 executions</span>
+                <span class="text-[9px] text-zinc-500">12M</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Oracle DW Source -->
+        <div class="space-y-0.5 pt-1">
+          <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-zinc-800/60 text-slate-200 font-semibold cursor-pointer">
+            <span class="text-[10px]">▼</span>
+            <span class="text-red-400 font-mono text-[11px]">oracle_dw</span>
+            <span class="ml-auto text-[9px] bg-red-950 text-red-300 border border-red-800/60 px-1 py-0.2 rounded uppercase">Oracle 19c</span>
+          </div>
+          <div class="pl-4 space-y-0.5 border-l border-zinc-800 ml-3 mt-1">
+            <div class="text-zinc-400 text-[11px] font-mono px-2 py-0.5">risk</div>
+            <div class="pl-3 space-y-0.5">
+              <div class="flex items-center justify-between px-2 py-1 rounded hover:bg-zinc-800 text-zinc-300 cursor-pointer font-mono text-[11px]">
+                <span>📄 counterparties</span>
+                <span class="text-[9px] text-zinc-500">2.4k</span>
+              </div>
+              <div class="flex items-center justify-between px-2 py-1 rounded hover:bg-zinc-800 text-zinc-400 cursor-pointer font-mono text-[11px]">
+                <span>📄 credit_limits</span>
+                <span class="text-[9px] text-zinc-500">45k</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SQL Server Source -->
+        <div class="space-y-0.5 pt-1">
+          <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-zinc-800/60 text-slate-200 font-semibold cursor-pointer">
+            <span class="text-[10px]">▶</span>
+            <span class="text-blue-400 font-mono text-[11px]">mssql_ledger</span>
+            <span class="ml-auto text-[9px] bg-blue-950 text-blue-300 border border-blue-800/60 px-1 py-0.2 rounded uppercase">MSSQL</span>
+          </div>
+        </div>
+
+        <!-- Cosmos DB Source -->
+        <div class="space-y-0.5 pt-1">
+          <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-zinc-800/60 text-slate-200 font-semibold cursor-pointer">
+            <span class="text-[10px]">▶</span>
+            <span class="text-emerald-400 font-mono text-[11px]">cosmos_ticks</span>
+            <span class="ml-auto text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-800/60 px-1 py-0.2 rounded uppercase">Cosmos</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Launchers Action Bar (Bottom of Sidebar) -->
+      <div class="p-3 border-t border-zinc-800 bg-zinc-950/80 space-y-2 flex-shrink-0">
+        <div class="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">1-Click Client Launchers</div>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 text-xs font-semibold transition" title="Download Power BI Data Source Connection">
+            <span>📊</span> Power BI (.pbids)
+          </button>
+          <button class="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-xs font-semibold transition" title="Download Excel OData Connection">
+            <span>📑</span> Excel (.odc)
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center / Right Cockpit Workspace -->
+    <main class="flex-1 flex flex-col min-h-0 bg-zinc-950 overflow-hidden">
+
+      <!-- Monaco SQL Editor Area -->
+      <div class="h-60 flex-shrink-0 bg-zinc-950 border-b border-zinc-800 flex flex-col justify-between">
+        <!-- Editor Toolbar -->
+        <div class="flex items-center justify-between px-4 py-2 bg-zinc-900 border-b border-zinc-800">
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">SQL Query Editor</span>
+            <span class="text-[11px] text-zinc-500 font-mono">Cross-Source Join (ADLS + Oracle)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded text-xs transition">
+              Format SQL
+            </button>
+            <button class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs shadow-md shadow-emerald-600/30 transition flex items-center gap-1.5">
+              <span>▶</span> Run Query <span class="text-[10px] font-mono opacity-80">(Ctrl+Enter)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Code Simulation Area -->
+        <div class="flex-1 p-4 font-mono text-xs text-slate-300 bg-[#1e1e1e] overflow-y-auto leading-relaxed select-text">
+          <div><span class="text-emerald-500/70">-- Cross-source federated analytical query</span></div>
+          <div><span class="text-emerald-500/70">-- Joins 10 TB ADLS Iceberg trades with on-premises Oracle counterparties</span></div>
+          <div><span class="text-[#569cd6]">SELECT</span></div>
+          <div class="pl-4">t.trade_id,</div>
+          <div class="pl-4">c.name <span class="text-[#569cd6]">AS</span> counterparty_name,</div>
+          <div class="pl-4">c.country,</div>
+          <div class="pl-4">t.desk_code,</div>
+          <div class="pl-4">t.amount,</div>
+          <div class="pl-4">t.status</div>
+          <div><span class="text-[#569cd6]">FROM</span> adls_lake.equity.trades t</div>
+          <div><span class="text-[#569cd6]">JOIN</span> oracle_dw.risk.counterparties c <span class="text-[#569cd6]">ON</span> t.counterparty_id = c.id</div>
+          <div><span class="text-[#569cd6]">ORDER BY</span> t.amount <span class="text-[#569cd6]">DESC</span></div>
+          <div><span class="text-[#569cd6]">LIMIT</span> <span class="text-[#b5cea8]">50</span>;</div>
+        </div>
+      </div>
+
+      <!-- Execution Plan Flame Bar & Governance Metrics Cockpit -->
+      <div class="bg-zinc-900 border-b border-zinc-800 p-3 space-y-2 flex-shrink-0">
+        
+        <!-- Top Status & KPI Badges -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <!-- KPI Pills -->
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-950 border border-zinc-800 rounded font-mono text-zinc-200">
+              <span class="text-emerald-400">⏱</span>
+              <span class="font-bold">2.41</span>
+              <span class="text-[10px] text-zinc-500">ms total</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-950 border border-zinc-800 rounded font-mono text-zinc-200">
+              <span class="text-sky-400">☰</span>
+              <span class="font-bold">50</span>
+              <span class="text-[10px] text-zinc-500">rows returned</span>
+            </div>
+          </div>
+
+          <!-- Optimization & Security Badges -->
+          <div class="flex items-center gap-1.5">
+            <span class="flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">
+              <span>⚡</span> Tier 1 Cache Hit (&lt;5ms)
+            </span>
+            <span class="flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-950 text-indigo-400 border border-indigo-800">
+              <span>⚙</span> DuckDB Vectorized Join
+            </span>
+            <span class="flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-950 text-amber-400 border border-amber-800">
+              <span>🛡️</span> RLS Injected: trades.desk_code IN ['FX']
+            </span>
+          </div>
+        </div>
+
+        <!-- Visual Timeline Flame Bar -->
+        <div class="space-y-1">
+          <div class="w-full h-2 rounded-full overflow-hidden bg-zinc-950 flex border border-zinc-800">
+            <div style="width: 12%" class="bg-cyan-500 transition-all" title="Planning: 0.28ms"></div>
+            <div style="width: 65%" class="bg-purple-500 transition-all" title="Parallel Remote Subqueries: 1.56ms"></div>
+            <div style="width: 23%" class="bg-emerald-500 transition-all" title="DuckDB Hash Join: 0.57ms"></div>
+          </div>
+
+          <!-- Timeline Breakdown Legend -->
+          <div class="flex flex-wrap items-center gap-x-4 text-[11px] text-zinc-400 pt-0.5">
+            <span class="flex items-center gap-1">
+              <span class="h-2 w-2 rounded-full bg-cyan-500 inline-block"></span>
+              Planning: <strong class="text-zinc-200 font-mono">0.28ms</strong>
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="h-2 w-2 rounded-full bg-purple-500 inline-block"></span>
+              ADLS Iceberg Subquery: <strong class="text-zinc-200 font-mono">1.12ms</strong>
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="h-2 w-2 rounded-full bg-purple-500 inline-block"></span>
+              Oracle DW Subquery: <strong class="text-zinc-200 font-mono">1.56ms</strong>
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="h-2 w-2 rounded-full bg-emerald-500 inline-block"></span>
+              Vectorized Join: <strong class="text-zinc-200 font-mono">0.57ms</strong>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 3. Results Data Grid with Streaming Exports -->
+      <div class="flex-1 min-h-0 flex flex-col bg-zinc-950">
+        
+        <!-- Results Toolbar -->
+        <div class="px-4 py-2 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Query Results</span>
+            <span class="text-[11px] text-zinc-500 font-mono">Showing 50 rows</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-zinc-400">Export:</span>
+            <button class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-mono text-zinc-200 border border-zinc-700 transition">
+              CSV
+            </button>
+            <button class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-mono text-zinc-200 border border-zinc-700 transition">
+              Parquet
+            </button>
+            <button class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-mono text-zinc-200 border border-zinc-700 transition">
+              NDJSON
+            </button>
+          </div>
+        </div>
+
+        <!-- Virtualized Table -->
+        <div class="flex-1 overflow-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-zinc-900/90 sticky top-0 border-b border-zinc-800 text-zinc-400 font-mono text-[11px]">
+              <tr>
+                <th class="p-2.5 pl-4 w-12 text-zinc-600">#</th>
+                <th class="p-2.5 font-semibold text-zinc-300">trade_id <span class="text-[9px] text-sky-400">INT</span></th>
+                <th class="p-2.5 font-semibold text-zinc-300">counterparty_name <span class="text-[9px] text-amber-400">VARCHAR</span></th>
+                <th class="p-2.5 font-semibold text-zinc-300">country <span class="text-[9px] text-amber-400">VARCHAR</span></th>
+                <th class="p-2.5 font-semibold text-zinc-300">desk_code <span class="text-[9px] text-emerald-400">RLS</span></th>
+                <th class="p-2.5 font-semibold text-zinc-300 text-right">amount <span class="text-[9px] text-purple-400">DECIMAL</span></th>
+                <th class="p-2.5 font-semibold text-zinc-300">status <span class="text-[9px] text-zinc-500">ENUM</span></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-800/60 font-mono text-[11px] text-zinc-300">
+              <tr class="hover:bg-zinc-900/60 transition">
+                <td class="p-2 pl-4 text-zinc-600">1</td>
+                <td class="p-2 text-sky-300 font-bold">1092841</td>
+                <td class="p-2 text-zinc-100 font-sans font-medium">Goldman Sachs Int.</td>
+                <td class="p-2 text-zinc-400">US</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">FX</span></td>
+                <td class="p-2 text-right font-bold text-zinc-100">$45,200,000.00</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-blue-950 text-blue-400 text-[10px]">SETTLED</span></td>
+              </tr>
+              <tr class="hover:bg-zinc-900/60 transition bg-zinc-900/20">
+                <td class="p-2 pl-4 text-zinc-600">2</td>
+                <td class="p-2 text-sky-300 font-bold">1092840</td>
+                <td class="p-2 text-zinc-100 font-sans font-medium">JPMorgan Chase Bank</td>
+                <td class="p-2 text-zinc-400">US</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">FX</span></td>
+                <td class="p-2 text-right font-bold text-zinc-100">$38,750,000.00</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-blue-950 text-blue-400 text-[10px]">SETTLED</span></td>
+              </tr>
+              <tr class="hover:bg-zinc-900/60 transition">
+                <td class="p-2 pl-4 text-zinc-600">3</td>
+                <td class="p-2 text-sky-300 font-bold">1092837</td>
+                <td class="p-2 text-zinc-100 font-sans font-medium">Barclays Capital PLC</td>
+                <td class="p-2 text-zinc-400">UK</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">FX</span></td>
+                <td class="p-2 text-right font-bold text-zinc-100">$29,100,000.00</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 text-[10px]">PENDING</span></td>
+              </tr>
+              <tr class="hover:bg-zinc-900/60 transition bg-zinc-900/20">
+                <td class="p-2 pl-4 text-zinc-600">4</td>
+                <td class="p-2 text-sky-300 font-bold">1092835</td>
+                <td class="p-2 text-zinc-100 font-sans font-medium">BNP Paribas Arbitrage</td>
+                <td class="p-2 text-zinc-400">FR</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">FX</span></td>
+                <td class="p-2 text-right font-bold text-zinc-100">$21,450,000.00</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-blue-950 text-blue-400 text-[10px]">SETTLED</span></td>
+              </tr>
+              <tr class="hover:bg-zinc-900/60 transition">
+                <td class="p-2 pl-4 text-zinc-600">5</td>
+                <td class="p-2 text-sky-300 font-bold">1092831</td>
+                <td class="p-2 text-zinc-100 font-sans font-medium">Deutsche Bank AG</td>
+                <td class="p-2 text-zinc-400">DE</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">FX</span></td>
+                <td class="p-2 text-right font-bold text-zinc-100">$18,900,000.00</td>
+                <td class="p-2"><span class="px-1.5 py-0.5 rounded bg-blue-950 text-blue-400 text-[10px]">SETTLED</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>
